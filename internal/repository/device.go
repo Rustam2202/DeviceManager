@@ -35,12 +35,23 @@ func (r *DeviceRepository) Get(ctx context.Context, uuid string) (*domain.Device
 }
 
 func (r *DeviceRepository) Update(ctx context.Context, device *domain.Device) error {
-	filter := bson.D{
-		{Key: "language", Value: device.Language},
-		{Key: "geolocation", Value: device.Geolocation},
-		{Key: "email", Value: device.Email},
+	// filter := bson.M{"_id": device.ID}
+	update := bson.M{
+		"$set": bson.M{
+			"$or": []bson.M{
+				{"language": device.Language},
+				{"geolocation": device.Geolocation},
+				{"email": device.Email},
+			},
+		},
 	}
-	_, err := r.MongoDB.MDB.Collection("devices").UpdateByID(ctx, device.ID, filter)
+
+	// filter := bson.D{
+	// 	{Key: "language", Value: device.Language},
+	// 	{Key: "geolocation", Value: device.Geolocation},
+	// 	{Key: "email", Value: device.Email},
+	// }
+	_, err := r.MongoDB.MDB.Collection("devices").UpdateByID(ctx, device.ID, update)
 	if err != nil {
 		return err
 	}

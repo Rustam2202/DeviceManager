@@ -39,14 +39,17 @@ func (s *HTTPServer) StartHTTPServer(ctx context.Context, wg *sync.WaitGroup) {
 	docs.SwaggerInfo.Host = fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 
 	{
+		r.GET("/", func(ctx *gin.Context) {
+			ctx.String(http.StatusOK, "Hello world from Party Calc http server")
+		})
 		r.POST("/device", s.deviceHandler.AddDevice)
-		r.GET("/device", s.deviceHandler.GetDevice)
-		r.PUT("/device", s.deviceHandler.UpdateLanguage)
-		// r.PUT("/device", s.deviceHandler.UpdateGeolocation)
-		// r.PUT("/device", s.deviceHandler.UpdateEmail)
-		r.DELETE("/device", s.deviceHandler.Delete)
+		r.GET("/device/:uuid", s.deviceHandler.GetDevice)
+		r.PUT("/device_lang", s.deviceHandler.UpdateLanguage)
+		r.PUT("/device_geo", s.deviceHandler.UpdateGeolocation)
+		r.PUT("/device_email", s.deviceHandler.UpdateEmail)
+		r.DELETE("/device/:uuid", s.deviceHandler.Delete)
 		r.POST("/event", s.eventHandler.AddEventRequest)
-		r.GET("/event", s.eventHandler.GetEvents)
+		r.GET("/event/:uuid", s.eventHandler.GetEvents)
 
 		r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}

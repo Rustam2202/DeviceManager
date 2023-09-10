@@ -149,34 +149,6 @@ paths:
       summary: Add device
       tags:
       - Device
-    put:
-      consumes:
-      - application/json
-      parameters:
-      - description: Update Device E-mail Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/device.UpdateEmailRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/device.UpdateEmailRequest'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
-      summary: Update a device E-mail
-      tags:
-      - Device E-mail
   /device/{uuid}:
     delete:
       consumes:
@@ -230,6 +202,93 @@ paths:
           schema:
             $ref: '#/definitions/handlers.ErrorResponce'
       summary: Get a device
+      tags:
+      - Device
+  /device_email:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Update Device E-mail Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/device.UpdateEmailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/device.UpdateEmailRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Update a device E-mail
+      tags:
+      - Device
+  /device_geo:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Update Device geolocation Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/device.UpdateGeolocationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/device.UpdateGeolocationRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Update a device geolocation
+      tags:
+      - Device
+  /device_lang:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Update Device language Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/device.UpdateLanguageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/device.UpdateLanguageRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Update a device language
       tags:
       - Device
   /event:
