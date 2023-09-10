@@ -1,0 +1,263 @@
+definitions:
+  device.AddDeviceRequest:
+    properties:
+      email:
+        type: string
+      geolocation:
+        type: string
+      language:
+        type: string
+      platform:
+        type: string
+      uuid:
+        type: string
+    type: object
+  device.UpdateEmailRequest:
+    properties:
+      email:
+        type: string
+      uuid:
+        type: string
+    type: object
+  device.UpdateGeolocationRequest:
+    properties:
+      geolocation:
+        type: string
+      uuid:
+        type: string
+    type: object
+  device.UpdateLanguageRequest:
+    properties:
+      language:
+        type: string
+      uuid:
+        type: string
+    type: object
+  domain.Device:
+    properties:
+      email:
+        type: string
+      geolocation:
+        type: string
+      id:
+        type: string
+      language:
+        type: string
+      platform:
+        type: string
+      uuid:
+        type: string
+    type: object
+  domain.Event:
+    properties:
+      attributes:
+        items: {}
+        type: array
+      createdAt:
+        type: string
+      deviceId:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  event.AddEventRequest:
+    properties:
+      attributes:
+        items: {}
+        type: array
+      name:
+        type: string
+      uuid:
+        type: string
+    type: object
+  event.GetEventsRequest:
+    properties:
+      timeBegin:
+        type: string
+      timeEnd:
+        type: string
+      uuid:
+        type: string
+    type: object
+  handlers.ErrorResponce:
+    properties:
+      error: {}
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: Device Manager API
+  version: "1.0"
+paths:
+  /device:
+    get:
+      consumes:
+      - application/json
+      description: Get events of device from database
+      parameters:
+      - description: Get Events Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/event.GetEventsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Event'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Get events
+      tags:
+      - Event
+    post:
+      consumes:
+      - application/json
+      description: Add a new device to database
+      parameters:
+      - description: Add Device Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/device.AddDeviceRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Add device
+      tags:
+      - Device
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Update Device E-mail Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/device.UpdateEmailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/device.UpdateEmailRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Update a device E-mail
+      tags:
+      - Device E-mail
+  /device/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a device from database
+      parameters:
+      - description: Device Id
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Delete a device
+      tags:
+      - Device
+    get:
+      consumes:
+      - application/json
+      description: Get a device from database
+      parameters:
+      - description: Device UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Device'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Get a device
+      tags:
+      - Device
+  /event:
+    post:
+      consumes:
+      - application/json
+      description: Add a new event from device to database
+      parameters:
+      - description: Add Event Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/event.AddEventRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Add event
+      tags:
+      - Event
+swagger: "2.0"

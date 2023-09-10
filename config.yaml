@@ -1,0 +1,32 @@
+ServerHTTPConfig:
+  host: localhost
+  port: 8080
+ServerGRPCKafkaConfig:
+  network: "tcp"
+  host: localhost
+  port: 50051
+  
+DatabaseConfig:
+  host: localhost
+  port: 27017
+  name: device_manager
+
+KafkaConfig:
+  brokers: localhost:9092
+  group: "group"
+
+LoggerConfig:
+  encoding: json
+  level: info
+  outputPaths:
+    - stdout
+  errorOutputPaths:
+    - stderr
+  encoderConfig:
+    messageKey: message
+    levelKey: level
+    timeKey: time
+    timeEncoder: ISO8601
+    levelEncoder: capital
+    durationEncoder: string
+    callerEncoder: short
