@@ -8,31 +8,38 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type GetEventsRequest struct {
-	UUID      string
-	TimeBegin time.Time
-	TimeEnd   time.Time
-}
-
-// @Summary		Get events
-// @Description	Get events of device from database
-// @Tags			Event
-// @Accept			json
-// @Produce		json
-// @Param		request	body		GetEventsRequest	true	"Get Events Request"
-// @Success		200		{object}	domain.Event
-// @Failure		400		{object}	handlers.ErrorResponce
-// @Failure		500		{object}	handlers.ErrorResponce
-// @Router			/device [get]
+//	@Summary		Get events
+//	@Description	Get events of device from database
+//	@Tags			Event
+//	@Accept			json
+//	@Produce		json
+//	@Param			uuid		query		string	true	"UUID"
+//	@Param			timeBegin	query		string	true	"Start time"
+//	@Param			timeEnd		query		string	true	"End time"
+//	@Success		200			{object}	[]domain.Event
+//	@Failure		400			{object}	handlers.ErrorResponce
+//	@Failure		500			{object}	handlers.ErrorResponce
+//	@Router			/event [get]
 func (h *EventHandler) GetEvents(ctx *gin.Context) {
-	var req GetEventsRequest
-	err := ctx.ShouldBindJSON(&req)
+	layout := "2006-01-02T15:04:05.999-07:00"
+	uuid := ctx.Query("uuid")
+	timeBegin := ctx.Query("timeBegin")
+	timeEnd := ctx.Query("timeEnd")
+
+	tb, err := time.Parse(layout, timeBegin)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest,
-			handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
+			handlers.ErrorResponce{Message: "Failed to parse begin date", Error: err})
 		return
 	}
-	events, err := h.service.GetDeviceEvents(ctx, req.UUID, req.TimeBegin, req.TimeEnd)
+	te, err := time.Parse(layout, timeEnd)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest,
+			handlers.ErrorResponce{Message: "Failed to parse end date", Error: err})
+		return
+	}
+
+	events, err := h.service.GetDeviceEvents(ctx, uuid, tb, te)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
 			handlers.ErrorResponce{Message: "Failed to add a new person to database", Error: err})

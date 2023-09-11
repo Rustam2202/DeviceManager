@@ -11,15 +11,16 @@ import (
 )
 
 type EventRepository struct {
-	MongoDB *database.DataBaseMongo
+	CollectionName string
+	MongoDB        *database.DataBaseMongo
 }
 
 func NewEventRepository(mdb *database.DataBaseMongo) *EventRepository {
-	return &EventRepository{MongoDB: mdb}
+	return &EventRepository{CollectionName: "events", MongoDB: mdb}
 }
 
 func (r *EventRepository) Create(ctx context.Context, event *domain.Event) error {
-	devicesCollection := r.MongoDB.MDB.Collection("events")
+	devicesCollection := r.MongoDB.MDB.Collection(r.CollectionName)
 	_, err := devicesCollection.InsertOne(ctx, event)
 	if err != nil {
 		return err
@@ -32,7 +33,7 @@ func (r *EventRepository) Get(ctx context.Context, deviceId primitive.ObjectID, 
 		"device_id":  deviceId,
 		"created_at": bson.M{"$gte": begin, "$lte": end},
 	}
-	cursor, err := r.MongoDB.MDB.Collection("events").Find(ctx, filter)
+	cursor, err := r.MongoDB.MDB.Collection(r.CollectionName).Find(ctx, filter)
 	if err != nil {
 		return nil, err
 	}

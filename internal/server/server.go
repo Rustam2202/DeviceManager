@@ -25,14 +25,14 @@ type HTTPServer struct {
 	eventHandler  *event.EventHandler
 }
 
-func NewHTTPServer(cfg *ServerHTTPConfig, dh *device.DeviceHandler) *HTTPServer {
-	return &HTTPServer{cfg: cfg, deviceHandler: dh}
+func NewHTTPServer(cfg *ServerHTTPConfig, dh *device.DeviceHandler, eh *event.EventHandler) *HTTPServer {
+	return &HTTPServer{cfg: cfg, deviceHandler: dh, eventHandler: eh}
 }
 
-// @title			Device Manager API
-// @version		1.0
-// @description
-// @BasePath
+//	@title		Device Manager API
+//	@version	1.0
+//	@description
+//	@BasePath
 func (s *HTTPServer) StartHTTPServer(ctx context.Context, wg *sync.WaitGroup) {
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = "/"
@@ -48,8 +48,9 @@ func (s *HTTPServer) StartHTTPServer(ctx context.Context, wg *sync.WaitGroup) {
 		r.PUT("/device_geo", s.deviceHandler.UpdateGeolocation)
 		r.PUT("/device_email", s.deviceHandler.UpdateEmail)
 		r.DELETE("/device/:uuid", s.deviceHandler.Delete)
+		
 		r.POST("/event", s.eventHandler.AddEventRequest)
-		r.GET("/event/:uuid", s.eventHandler.GetEvents)
+		r.GET("/event", s.eventHandler.GetEvents)
 
 		r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}

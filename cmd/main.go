@@ -7,6 +7,7 @@ import (
 	"device-manager/internal/repository"
 	"device-manager/internal/server"
 	"device-manager/internal/server/handlers/device"
+	"device-manager/internal/server/handlers/event"
 	"device-manager/internal/service"
 
 	"context"
@@ -17,17 +18,28 @@ import (
 )
 
 func main() {
-	cfg := config.LoadConfig()
-	logger.IntializeLogger(*cfg.LoggerConfig)
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
+
+	cfg := config.LoadConfig()
+	logger.IntializeLogger(*cfg.LoggerConfig)
 	wg := &sync.WaitGroup{}
 
-	mdb := database.NewMongo(cfg.DatabaseConfig)
-	devicerRepository := repository.NewDeviceRepository(mdb)
+	mdb, err := database.NewMongo(cfg.DatabaseConfig)
+	if err != nil {
+		return
+	}
+
+	deviceRepository := repository.NewDeviceRepository(mdb)
 	eventRepository := repository.NewEventRepository(mdb)
-	deviceService := service.NewDeviceService(devicerRepository, eventRepository)
+	deviceService := service.NewDeviceService(deviceRepository)
+	eventService := service.NewEventService(deviceRepository, eventRepository)
 	deviceHandler := device.NewDeviceHandler(deviceService)
-	s := server.NewHTTPServer(cfg.ServerHTTPConfig, deviceHandler)
-	s.StartHTTPServer(ctx, wg)
+	eventHandler := event.NewEventHandler(eventService)
+
+	s := server.NewHTTPServer(cfg.ServerHTTPConfig, deviceHandler, eventHandler)
+	wg.Add(1)
+	go s.StartHTTPServer(ctx, wg)
+
+	wg.Wait()
 }

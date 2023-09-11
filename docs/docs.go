@@ -17,50 +17,6 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/device": {
-            "get": {
-                "description": "Get events of device from database",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Event"
-                ],
-                "summary": "Get events",
-                "parameters": [
-                    {
-                        "description": "Get Events Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/event.GetEventsRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.Event"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
-                        }
-                    }
-                }
-            },
             "post": {
                 "description": "Add a new device to database",
                 "consumes": [
@@ -322,6 +278,65 @@ const docTemplate = `{
             }
         },
         "/event": {
+            "get": {
+                "description": "Get events of device from database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Get events",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID",
+                        "name": "uuid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start time",
+                        "name": "timeBegin",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End time",
+                        "name": "timeEnd",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Event"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ErrorResponce"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ErrorResponce"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Add a new event from device to database",
                 "consumes": [
@@ -471,20 +486,6 @@ const docTemplate = `{
                     "items": {}
                 },
                 "name": {
-                    "type": "string"
-                },
-                "uuid": {
-                    "type": "string"
-                }
-            }
-        },
-        "event.GetEventsRequest": {
-            "type": "object",
-            "properties": {
-                "timeBegin": {
-                    "type": "string"
-                },
-                "timeEnd": {
                     "type": "string"
                 },
                 "uuid": {

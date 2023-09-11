@@ -72,15 +72,6 @@ definitions:
       uuid:
         type: string
     type: object
-  event.GetEventsRequest:
-    properties:
-      timeBegin:
-        type: string
-      timeEnd:
-        type: string
-      uuid:
-        type: string
-    type: object
   handlers.ErrorResponce:
     properties:
       error: {}
@@ -93,35 +84,6 @@ info:
   version: "1.0"
 paths:
   /device:
-    get:
-      consumes:
-      - application/json
-      description: Get events of device from database
-      parameters:
-      - description: Get Events Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/event.GetEventsRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/domain.Event'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
-      summary: Get events
-      tags:
-      - Event
     post:
       consumes:
       - application/json
@@ -292,6 +254,46 @@ paths:
       tags:
       - Device
   /event:
+    get:
+      consumes:
+      - application/json
+      description: Get events of device from database
+      parameters:
+      - description: UUID
+        in: query
+        name: uuid
+        required: true
+        type: string
+      - description: Start time
+        in: query
+        name: timeBegin
+        required: true
+        type: string
+      - description: End time
+        in: query
+        name: timeEnd
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Event'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Get events
+      tags:
+      - Event
     post:
       consumes:
       - application/json

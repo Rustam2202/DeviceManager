@@ -22,19 +22,19 @@ type EventRepository interface {
 
 type DeviceService struct {
 	repoDevice DeviceRepository
-	repoEvent  EventRepository
 }
 
 type EventService struct {
-	repo EventRepository
+	repoDevice DeviceRepository
+	repoEvent  EventRepository
 }
 
-func NewDeviceService(rd DeviceRepository, re EventRepository) *DeviceService {
-	return &DeviceService{repoDevice: rd, repoEvent: re}
+func NewDeviceService(rd DeviceRepository) *DeviceService {
+	return &DeviceService{repoDevice: rd}
 }
 
-func NewEventService(re EventRepository) *EventService {
-	return &EventService{repo: re}
+func NewEventService(rd DeviceRepository, re EventRepository) *EventService {
+	return &EventService{repoDevice: rd, repoEvent: re}
 }
 
 func (s *DeviceService) CreateDevice(ctx context.Context, uuid, platform, lang, geo, email string) error {
@@ -51,7 +51,7 @@ func (s *DeviceService) CreateDevice(ctx context.Context, uuid, platform, lang, 
 	return nil
 }
 
-func (s *DeviceService) CreateEvent(ctx context.Context, uuid, name string, attributes []interface{}) error {
+func (s *EventService) CreateEvent(ctx context.Context, uuid, name string, attributes []interface{}) error {
 	device, err := s.repoDevice.Get(ctx, uuid)
 	if err != nil {
 		return err
@@ -77,7 +77,7 @@ func (s *DeviceService) GetDeviceInfo(ctx context.Context, uuid string) (*domain
 	return device, nil
 }
 
-func (s *DeviceService) GetDeviceEvents(ctx context.Context, uuid string, begin, end time.Time) ([]domain.Event, error) {
+func (s *EventService) GetDeviceEvents(ctx context.Context, uuid string, begin, end time.Time) ([]domain.Event, error) {
 	device, err := s.repoDevice.Get(ctx, uuid)
 	if err != nil {
 		return nil, err

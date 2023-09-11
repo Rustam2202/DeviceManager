@@ -3,9 +3,9 @@ package event
 import "device-manager/internal/service"
 
 type EventHandler struct {
-	service *service.DeviceService
+	service *service.EventService
 }
 
-func NewEventHandler(s *service.DeviceService) *EventHandler {
+func NewEventHandler(s *service.EventService) *EventHandler {
 	return &EventHandler{service: s}
 }

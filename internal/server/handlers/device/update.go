@@ -12,15 +12,15 @@ type UpdateLanguageRequest struct {
 	Language string `json:"language"`
 }
 
-// @Summary		Update a device language
-// @Tags			Device
-// @Accept			json
-// @Produce		json
-// @Param			request	body		UpdateLanguageRequest	true	"Update Device language Request"
-// @Success		200		{object}	UpdateLanguageRequest
-// @Failure		400		{object}	handlers.ErrorResponce
-// @Failure		500		{object}	handlers.ErrorResponce
-// @Router			/device_lang [put]
+//	@Summary	Update a device language
+//	@Tags		Device
+//	@Accept		json
+//	@Produce	json
+//	@Param		request	body		UpdateLanguageRequest	true	"Update Device language Request"
+//	@Success	200		{object}	UpdateLanguageRequest
+//	@Failure	400		{object}	handlers.ErrorResponce
+//	@Failure	500		{object}	handlers.ErrorResponce
+//	@Router		/device_lang [put]
 func (h *DeviceHandler) UpdateLanguage(ctx *gin.Context) {
 	var req UpdateLanguageRequest
 	err := ctx.ShouldBindJSON(&req)
@@ -43,15 +43,15 @@ type UpdateGeolocationRequest struct {
 	Geolocation string `json:"geolocation"`
 }
 
-// @Summary		Update a device geolocation
-// @Tags			Device
-// @Accept			json
-// @Produce		json
-// @Param			request	body		UpdateGeolocationRequest	true	"Update Device geolocation Request"
-// @Success		200		{object}	UpdateGeolocationRequest
-// @Failure		400		{object}	handlers.ErrorResponce
-// @Failure		500		{object}	handlers.ErrorResponce
-// @Router			/device_geo [put]
+//	@Summary	Update a device geolocation
+//	@Tags		Device
+//	@Accept		json
+//	@Produce	json
+//	@Param		request	body		UpdateGeolocationRequest	true	"Update Device geolocation Request"
+//	@Success	200		{object}	UpdateGeolocationRequest
+//	@Failure	400		{object}	handlers.ErrorResponce
+//	@Failure	500		{object}	handlers.ErrorResponce
+//	@Router		/device_geo [put]
 func (h *DeviceHandler) UpdateGeolocation(ctx *gin.Context) {
 	var req UpdateGeolocationRequest
 	err := ctx.ShouldBindJSON(&req)
@@ -74,15 +74,15 @@ type UpdateEmailRequest struct {
 	Email string `json:"email"`
 }
 
-// @Summary		Update a device E-mail
-// @Tags			Device
-// @Accept			json
-// @Produce		json
-// @Param			request	body		UpdateEmailRequest	true	"Update Device E-mail Request"
-// @Success		200		{object}	UpdateEmailRequest
-// @Failure		400		{object}	handlers.ErrorResponce
-// @Failure		500		{object}	handlers.ErrorResponce
-// @Router			/device_email [put]
+//	@Summary	Update a device E-mail
+//	@Tags		Device
+//	@Accept		json
+//	@Produce	json
+//	@Param		request	body		UpdateEmailRequest	true	"Update Device E-mail Request"
+//	@Success	200		{object}	UpdateEmailRequest
+//	@Failure	400		{object}	handlers.ErrorResponce
+//	@Failure	500		{object}	handlers.ErrorResponce
+//	@Router		/device_email [put]
 func (h *DeviceHandler) UpdateEmail(ctx *gin.Context) {
 	var req UpdateEmailRequest
 	err := ctx.ShouldBindJSON(&req)

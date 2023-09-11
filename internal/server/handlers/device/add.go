@@ -17,16 +17,16 @@ type AddDeviceRequest struct {
 	Email       string `json:"email"`
 }
 
-// @Summary		Add device
-// @Description	Add a new device to database
-// @Tags			Device
-// @Accept			json
-// @Produce		json
-// @Param			request	body		AddDeviceRequest	true	"Add Device Request"
-// @Success		201 
-// @Failure		400		{object}	handlers.ErrorResponce
-// @Failure		500		{object}	handlers.ErrorResponce
-// @Router			/device [post]
+//	@Summary		Add device
+//	@Description	Add a new device to database
+//	@Tags			Device
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body	AddDeviceRequest	true	"Add Device Request"
+//	@Success		201		
+//	@Failure		400		{object}	handlers.ErrorResponce
+//	@Failure		500		{object}	handlers.ErrorResponce
+//	@Router			/device [post]
 func (h *DeviceHandler) AddDevice(ctx *gin.Context) {
 	var req AddDeviceRequest
 	err := ctx.ShouldBindJSON(&req)
