@@ -2,6 +2,7 @@ package config
 
 import (
 	"device-manager/internal/database"
+	"device-manager/internal/kafka"
 	"device-manager/internal/logger"
 	"device-manager/internal/server"
 	"flag"
@@ -14,6 +15,7 @@ type Config struct {
 	LoggerConfig     *logger.LoggerConfig
 	DatabaseConfig   *database.MongoDbConfig
 	ServerHTTPConfig *server.ServerHTTPConfig
+	KafkaConfig      *kafka.KafkaConfig
 }
 
 func LoadConfig() *Config {

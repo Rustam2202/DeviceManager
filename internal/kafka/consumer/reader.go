@@ -3,7 +3,7 @@ package consumer
 import (
 	"context"
 	"fmt"
-	"party-calc/internal/logger"
+	"device-manager/internal/logger"
 	"sync"
 
 	"github.com/segmentio/kafka-go"

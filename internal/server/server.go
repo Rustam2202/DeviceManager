@@ -23,6 +23,7 @@ type HTTPServer struct {
 	HTTPServer    *http.Server
 	deviceHandler *device.DeviceHandler
 	eventHandler  *event.EventHandler
+	
 }
 
 func NewHTTPServer(cfg *ServerHTTPConfig, dh *device.DeviceHandler, eh *event.EventHandler) *HTTPServer {

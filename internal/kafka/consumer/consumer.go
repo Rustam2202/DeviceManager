@@ -2,36 +2,32 @@ package consumer
 
 import (
 	"context"
-	k "party-calc/internal/kafka"
-	"party-calc/internal/service"
+	k "device-manager/internal/kafka"
+	"device-manager/internal/service"
 	"sync"
 
 	"github.com/segmentio/kafka-go"
 )
 
 type KafkaConsumer struct {
-	services *service.Services
-	cfg      *kafka.ReaderConfig
+	deviceService *service.DeviceService
+	eventService  *service.EventService
+	cfg           *kafka.ReaderConfig
 }
 
-func NewKafkaConsumer(cfg k.KafkaConfig, s *service.Services) *KafkaConsumer {
+func NewKafkaConsumer(cfg *k.KafkaConfig, ds *service.DeviceService, es *service.EventService) *KafkaConsumer {
 	config := kafka.ReaderConfig{}
 	config.Brokers = cfg.Brokers
 	config.GroupID = cfg.Group
-	return &KafkaConsumer{services: s, cfg: &config}
+	return &KafkaConsumer{cfg: &config, deviceService: ds, eventService: es}
 }
 
 func (r *KafkaConsumer) RunKafkaConsumer(ctx context.Context, wg *sync.WaitGroup) {
 	TopicsServe := map[string]func(context.Context, kafka.Message) error{
-		k.PersonCreate:      r.personCreateServe,
-		k.PersonUpdate:      r.PersonUpdateServe,
-		k.PersonDelete:      r.personDeleteServe,
-		k.EventCreate:       r.eventCreateServe,
-		k.EventUpdate:       r.eventUpdateServe,
-		k.EventDelete:       r.eventDeleteServe,
-		k.PersonEventCreate: r.persnEventCreateServe,
-		k.PersonEventUpdate: r.personEventUpdateServe,
-		k.PersonEventDelete: r.personEventDeleteServe,
+		// k.DeviceCreate: r.deviceCreateServe,
+		// k.DeviceUpdate: r.deviceUpdateServe,
+		// k.DeviceDelete: r.deviceDeleteServe,
+		k.EventCreate: r.eventCreateServe,
 	}
 	for k, v := range TopicsServe {
 		wg.Add(1)

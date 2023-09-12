@@ -2,7 +2,7 @@ package producer
 
 import (
 	"context"
-	k "party-calc/internal/kafka"
+	k "device-manager/internal/kafka"
 
 	"github.com/segmentio/kafka-go"
 )
@@ -12,7 +12,7 @@ type KafkaProducer struct {
 	cfg    *kafka.WriterConfig
 }
 
-func NewKafkaProducer(cfg k.KafkaConfig) *KafkaProducer {
+func NewKafkaProducer(cfg *k.KafkaConfig) *KafkaProducer {
 	config := kafka.WriterConfig{Brokers: cfg.Brokers}
 	return &KafkaProducer{cfg: &config}
 }

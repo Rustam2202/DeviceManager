@@ -19,13 +19,13 @@ func NewDeviceRepository(mdb *database.DataBaseMongo) *DeviceRepository {
 	return &DeviceRepository{CollectionName: "devices", MongoDB: mdb}
 }
 
-func (r *DeviceRepository) Create(ctx context.Context, device *domain.Device) (*mongo.InsertOneResult, error) {
+func (r *DeviceRepository) Create(ctx context.Context, device *domain.Device) error {
 	devicesCollection := r.MongoDB.MDB.Collection(r.CollectionName)
-	result, err := devicesCollection.InsertOne(ctx, device)
+	_, err := devicesCollection.InsertOne(ctx, device)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return result, nil
+	return nil
 }
 
 func (r *DeviceRepository) Get(ctx context.Context, uuid string) (*domain.Device, error) {
