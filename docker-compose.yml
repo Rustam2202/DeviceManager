@@ -7,16 +7,19 @@ services:
     depends_on:
       - mongodb
       # - kafka
-    # environment:
-    #  - MONGODB_URL=mongodb://mongo:27015/
+    environment:
+     - MONGODB_URL=mongo://localhost:27017
+    networks:
+      - my-network
 
   mongodb:
     image: mongo
     restart: always
     ports:
-      - 27010:27015
-    # volumes:
-    #   - mongodb:/data/db
+      - 27017:27017
+    networks:
+      - my-network
+
 
   # zookeeper:
   #   image: wurstmeister/zookeeper
@@ -33,3 +36,8 @@ services:
   #     - KAFKA_ADVERTISED_HOST_NAME=kafka
   #     - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
   #     - KAFKA_CREATE_TOPICS=event-create
+
+networks:
+  my-network:
+    driver: bridge
+

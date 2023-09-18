@@ -38,8 +38,8 @@ func (h *EventHandler) GetEvents(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to parse end date", Error: err})
 		return
 	}
-	
-	events, err := h.Service.GetDeviceEvents(ctx, uuid, tb, te)
+
+	events, err := h.Service.GetDeviceEvents(ctx, uuid, tb, te, "")
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
 			handlers.ErrorResponce{Message: "Failed to add a new person to database", Error: err})

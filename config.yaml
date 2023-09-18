@@ -7,7 +7,7 @@ ServerGRPCKafkaConfig:
   port: 50051
   
 DatabaseConfig:
-  host: localhost
+  host: mongo
   port: 27017
   name: device_manager
 

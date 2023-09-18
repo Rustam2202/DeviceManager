@@ -12,7 +12,7 @@ docker-build:
 docker-run:
 	docker run --publish 8081:8080 device-manager
 compose:
-	docker-compose up 
+	docker-compose up -d
 
 lint:
 	golangci-lint run

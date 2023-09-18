@@ -3,13 +3,14 @@ package service
 import (
 	"context"
 	"device-manager/internal/domain"
+	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type DeviceRepository interface {
-	Create(context.Context, *domain.Device) error
+	Create(context.Context, *domain.Device) (*domain.Device, error)
 	Get(context.Context, string) (*domain.Device, error)
 	Update(context.Context, *domain.Device) error
 	Delete(context.Context, string) error
@@ -38,7 +39,7 @@ func NewEventService(rd DeviceRepository, re EventRepository) *EventService {
 }
 
 func (s *DeviceService) CreateDevice(ctx context.Context, uuid, platform, lang, geo, email string) error {
-	err := s.repoDevice.Create(ctx, &domain.Device{
+	_, err := s.repoDevice.Create(ctx, &domain.Device{
 		UUID:        uuid,
 		Platform:    platform,
 		Language:    lang,
@@ -54,7 +55,7 @@ func (s *DeviceService) CreateDevice(ctx context.Context, uuid, platform, lang, 
 func (s *EventService) CreateEvent(ctx context.Context, uuid, name string, attributes []interface{}) error {
 	device, err := s.repoDevice.Get(ctx, uuid)
 	if err != nil {
-		return err
+		return fmt.Errorf("no device exist with '%s' uuid", uuid)
 	}
 	event := domain.Event{
 		DeviceId:   device.ID,
@@ -77,7 +78,7 @@ func (s *DeviceService) GetDeviceInfo(ctx context.Context, uuid string) (*domain
 	return device, nil
 }
 
-func (s *EventService) GetDeviceEvents(ctx context.Context, uuid string, begin, end time.Time) ([]domain.Event, error) {
+func (s *EventService) GetDeviceEvents(ctx context.Context, uuid string, begin, end time.Time, filter string) ([]domain.Event, error) {
 	device, err := s.repoDevice.Get(ctx, uuid)
 	if err != nil {
 		return nil, err

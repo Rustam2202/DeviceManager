@@ -15,7 +15,8 @@ import (
 
 var userCollection *mongo.Collection
 
-func TestCreate(t *testing.T) {
+func TestCreateDevice(t *testing.T) {
+	ctx := context.Background()
 	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	defer mt.Close()
 	mt.Run("success", func(mt *mtest.T) {
@@ -25,7 +26,7 @@ func TestCreate(t *testing.T) {
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
 		})
-		device, err := repo.Create(context.Background(), &domain.Device{
+		device, err := repo.Create(ctx, &domain.Device{
 			ID:          id,
 			UUID:        "test-uuid",
 			Platform:    "mac",
@@ -35,6 +36,24 @@ func TestCreate(t *testing.T) {
 		})
 		assert.Nil(t, err)
 		assert.Equal(t, id, device.ID)
+	})
+	mt.Run("error", func(mt *mtest.T) {
+		userCollection = mt.Coll
+		id := primitive.NewObjectID()
+		mt.AddMockResponses(bson.D{{Key: "error", Value: 0}})
+		repo := NewDeviceRepository(&database.DataBaseMongo{
+			MDB: mt.DB,
+		})
+		device, err := repo.Create(ctx, &domain.Device{
+			ID:          id,
+			UUID:        "test-uuid",
+			Platform:    "mac",
+			Language:    "en",
+			Geolocation: "here",
+			Email:       "test@email.com",
+		})
+		assert.Nil(t, device)
+		assert.NotNil(t, err)
 	})
 	mt.Run("dublicate", func(mt *mtest.T) {
 		userCollection = mt.Coll
@@ -46,7 +65,7 @@ func TestCreate(t *testing.T) {
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
 		})
-		device, err := repo.Create(context.Background(), &domain.Device{})
+		device, err := repo.Create(ctx, &domain.Device{})
 		assert.Nil(t, device)
 		assert.NotNil(t, err)
 		assert.True(t, mongo.IsDuplicateKeyError(err))
@@ -54,13 +73,13 @@ func TestCreate(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
+	ctx := context.Background()
 	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	defer mt.Close()
 
 	mt.Run("success", func(mt *mtest.T) {
 		userCollection = mt.Coll
 		id := primitive.NewObjectID()
-
 		expect := domain.Device{
 			ID:          id,
 			UUID:        "test-uuid",
@@ -69,7 +88,6 @@ func TestGet(t *testing.T) {
 			Geolocation: "here",
 			Email:       "test@email.com",
 		}
-
 		mt.AddMockResponses(mtest.CreateCursorResponse(1, "foo.bar", mtest.FirstBatch, bson.D{
 			{Key: "_id", Value: expect.ID},
 			{Key: "uuid", Value: expect.UUID},
@@ -78,17 +96,27 @@ func TestGet(t *testing.T) {
 			{Key: "geolocation", Value: expect.Geolocation},
 			{Key: "email", Value: expect.Email},
 		}))
-
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
 		})
-		response, err := repo.Get(context.Background(), "test-uuid")
+		response, err := repo.Get(ctx, "test-uuid")
 		assert.Nil(t, err)
 		assert.Equal(t, expect, *response)
+	})
+	mt.Run("error", func(mt *mtest.T) {
+		userCollection = mt.Coll
+		mt.AddMockResponses(bson.D{{Key: "error", Value: 0}})
+		repo := NewDeviceRepository(&database.DataBaseMongo{
+			MDB: mt.DB,
+		})
+		response, err := repo.Get(ctx, "test-uuid")
+		assert.Nil(t, response)
+		assert.NotNil(t, err)
 	})
 }
 
 func TestUpdate(t *testing.T) {
+	ctx := context.Background()
 	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	defer mt.Close()
 
@@ -103,28 +131,26 @@ func TestUpdate(t *testing.T) {
 			Geolocation: "here",
 			Email:       "test@email.com",
 		}
-		mt.AddMockResponses(bson.D{
+		mockResult := mongo.UpdateResult{
+			MatchedCount:  1,
+			ModifiedCount: 1,
+		}
+		mockResponse := bson.D{
 			{Key: "ok", Value: 1},
-			{Key: "value", Value: bson.D{
-				{Key: "_id", Value: device.ID},
-				{Key: "uuid", Value: device.UUID},
-				{Key: "platform", Value: device.Platform},
-				{Key: "language", Value: device.Language},
-				{Key: "geolocation", Value: device.Geolocation},
-				{Key: "email", Value: device.Email},
-			}},
-		})
+			{Key: "n", Value: mockResult.MatchedCount},
+			{Key: "nModified", Value: mockResult.ModifiedCount},
+		}
+		mt.AddMockResponses(mockResponse)
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
 		})
-
-		err := repo.Update(context.Background(), &device)
+		err := repo.Update(ctx, &device)
 		assert.Nil(t, err)
 	})
-
 }
 
 func TestDelete(t *testing.T) {
+	ctx := context.Background()
 	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	defer mt.Close()
 
@@ -138,7 +164,7 @@ func TestDelete(t *testing.T) {
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
 		})
-		err := repo.Delete(context.Background(), "")
+		err := repo.Delete(ctx, "")
 		assert.Nil(t, err)
 	})
 
@@ -152,7 +178,7 @@ func TestDelete(t *testing.T) {
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
 		})
-		err := repo.Delete(context.Background(), "")
+		err := repo.Delete(ctx, "")
 		assert.NotNil(t, err)
 	})
 }
