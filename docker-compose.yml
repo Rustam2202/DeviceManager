@@ -1,24 +1,32 @@
 version: '3'
 services:
+  debug:
+    build: 
+      context: .
+      dockerfile: Dockerfile.debug
+    ports:
+      - "8083:8080"
+      - "4040:4000"
+
   app:
     build: .
     ports:
       - 8080:8080
     depends_on:
       - mongodb
-      # - kafka
-    environment:
-     - MONGODB_URL=mongo://localhost:27017
-    networks:
-      - my-network
+      - kafka
+    # environment:
+    #  - MONGODB_URL=mongo://localhost:27017
+    # networks:
+    #   - my-network
 
   mongodb:
     image: mongo
     restart: always
     ports:
       - 27017:27017
-    networks:
-      - my-network
+    # networks:
+    #   - my-network
 
 
   zookeeper:
@@ -37,7 +45,7 @@ services:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_CREATE_TOPICS=event-create
 
-networks:
-  my-network:
-    driver: bridge
+# networks:
+#   my-network:
+#     driver: bridge
 

@@ -7,7 +7,7 @@ ServerGRPCKafkaConfig:
   port: 50051
   
 DatabaseConfig:
-  host: localhost
+  host: 127.0.0.1 #localhost
   port: 27017
   name: device_manager
 

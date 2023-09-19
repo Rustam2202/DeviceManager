@@ -10,9 +10,14 @@ swag:
 docker-build:
 	docker build --tag device-manager .
 docker-run:
-	docker run --publish 8081:8080 device-manager
+	docker run -p 8081:8080 device-manager
 compose:
 	docker-compose up -d
+	
+docker-debug-build:
+	docker build --file Dockerfile.debug --tag device-manager-debugger .
+docker-debug-run:
+	docker run -d -p 8082:8080 -p 4000:4000 --name  device-manager-debug device-manager-debugger
 
 lint:
 	golangci-lint run
