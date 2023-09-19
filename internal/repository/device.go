@@ -31,18 +31,22 @@ func (r *DeviceRepository) Create(ctx context.Context, device *domain.Device) (*
 	return device, nil
 }
 
-// func (r *DeviceRepository) GetByID(ctx context.Context, id primitive.ObjectID) (*domain.Device, error) {
-// 	var result domain.Device
-// 	err := r.MongoDB.MDB.Collection(r.CollectionName).FindOne(ctx, bson.M{"_id": id}).Decode(&result)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return &result, nil
-// }
-
-func (r *DeviceRepository) Get(ctx context.Context, uuid string) (*domain.Device, error) {
+func (r *DeviceRepository) GetByID(ctx context.Context, id primitive.ObjectID) (*domain.Device, error) {
 	var result domain.Device
-	err := r.MongoDB.MDB.Collection(r.CollectionName).FindOne(ctx, bson.M{"uuid": uuid}).Decode(&result)
+	err := r.MongoDB.MDB.
+		Collection(r.CollectionName).
+		FindOne(ctx, bson.M{"_id": id}).Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+func (r *DeviceRepository) GetByUUID(ctx context.Context, uuid string) (*domain.Device, error) {
+	var result domain.Device
+	err := r.MongoDB.MDB.
+		Collection(r.CollectionName).
+		FindOne(ctx, bson.M{"uuid": uuid}).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +59,9 @@ func (r *DeviceRepository) Update(ctx context.Context, device *domain.Device) er
 		"geolocation": device.Geolocation,
 		"email":       device.Email,
 	}
-	result, err := r.MongoDB.MDB.Collection(r.CollectionName).UpdateOne(ctx, bson.M{"_id": device.ID}, bson.M{"$set": update})
+	result, err := r.MongoDB.MDB.
+		Collection(r.CollectionName).
+		UpdateOne(ctx, bson.M{"_id": device.ID}, bson.M{"$set": update})
 	if err != nil {
 		return err
 	}
@@ -66,7 +72,9 @@ func (r *DeviceRepository) Update(ctx context.Context, device *domain.Device) er
 }
 
 func (r *DeviceRepository) Delete(ctx context.Context, uuid string) error {
-	result, err := r.MongoDB.MDB.Collection(r.CollectionName).DeleteOne(ctx, bson.M{"uuid": uuid})
+	result, err := r.MongoDB.MDB.
+		Collection(r.CollectionName).
+		DeleteOne(ctx, bson.M{"uuid": uuid})
 	if err != nil {
 		return err
 	}

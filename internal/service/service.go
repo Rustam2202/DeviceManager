@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"device-manager/internal/domain"
+	"device-manager/internal/logger"
 	"fmt"
 	"time"
 
@@ -11,7 +12,8 @@ import (
 
 type DeviceRepository interface {
 	Create(context.Context, *domain.Device) (*domain.Device, error)
-	Get(context.Context, string) (*domain.Device, error)
+	GetByID(context.Context, primitive.ObjectID) (*domain.Device, error)
+	GetByUUID(context.Context, string) (*domain.Device, error)
 	Update(context.Context, *domain.Device) error
 	Delete(context.Context, string) error
 }
@@ -39,7 +41,17 @@ func NewEventService(rd DeviceRepository, re EventRepository) *EventService {
 }
 
 func (s *DeviceService) CreateDevice(ctx context.Context, uuid, platform, lang, geo, email string) error {
-	_, err := s.repoDevice.Create(ctx, &domain.Device{
+	if uuid == "" {
+		return fmt.Errorf("uuid mustn't be empty")
+	}
+	dev, _ := s.GetDeviceInfo(ctx, uuid)
+	// if err != nil {
+	// 	return fmt.Errorf("validation uuid error")
+	// }
+	if dev != nil {
+		return fmt.Errorf("devise %s already exist", dev.UUID)
+	}
+	device, err := s.repoDevice.Create(ctx, &domain.Device{
 		UUID:        uuid,
 		Platform:    platform,
 		Language:    lang,
@@ -49,11 +61,12 @@ func (s *DeviceService) CreateDevice(ctx context.Context, uuid, platform, lang, 
 	if err != nil {
 		return err
 	}
+	logger.Logger.Info(fmt.Sprintf("device %s added to db with id:%s", device.UUID, device.ID.String()))
 	return nil
 }
 
 func (s *EventService) CreateEvent(ctx context.Context, uuid, name string, attributes []interface{}) error {
-	device, err := s.repoDevice.Get(ctx, uuid)
+	device, err := s.repoDevice.GetByUUID(ctx, uuid)
 	if err != nil {
 		return fmt.Errorf("no device exist with '%s' uuid", uuid)
 	}
@@ -67,11 +80,12 @@ func (s *EventService) CreateEvent(ctx context.Context, uuid, name string, attri
 	if err != nil {
 		return nil
 	}
+	logger.Logger.Info(fmt.Sprintf("event '%s' added to db with id:%s", event.Name, event.ID.String()))
 	return nil
 }
 
 func (s *DeviceService) GetDeviceInfo(ctx context.Context, uuid string) (*domain.Device, error) {
-	device, err := s.repoDevice.Get(ctx, uuid)
+	device, err := s.repoDevice.GetByUUID(ctx, uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +93,7 @@ func (s *DeviceService) GetDeviceInfo(ctx context.Context, uuid string) (*domain
 }
 
 func (s *EventService) GetDeviceEvents(ctx context.Context, uuid string, begin, end time.Time, filter string) ([]domain.Event, error) {
-	device, err := s.repoDevice.Get(ctx, uuid)
+	device, err := s.repoDevice.GetByUUID(ctx, uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +105,7 @@ func (s *EventService) GetDeviceEvents(ctx context.Context, uuid string, begin, 
 }
 
 func (s *DeviceService) UpdateLaguage(ctx context.Context, uuid, lang string) error {
-	device, err := s.repoDevice.Get(ctx, uuid)
+	device, err := s.repoDevice.GetByUUID(ctx, uuid)
 	if err != nil {
 		return err
 	}
@@ -100,11 +114,12 @@ func (s *DeviceService) UpdateLaguage(ctx context.Context, uuid, lang string) er
 	if err != nil {
 		return err
 	}
+	logger.Logger.Info(fmt.Sprintf("device %s: language was updated on %s", device.UUID, device.Language))
 	return nil
 }
 
 func (s *DeviceService) UpdateGeolocation(ctx context.Context, uuid, geo string) error {
-	device, err := s.repoDevice.Get(ctx, uuid)
+	device, err := s.repoDevice.GetByUUID(ctx, uuid)
 	if err != nil {
 		return err
 	}
@@ -113,11 +128,12 @@ func (s *DeviceService) UpdateGeolocation(ctx context.Context, uuid, geo string)
 	if err != nil {
 		return err
 	}
+	logger.Logger.Info(fmt.Sprintf("device %s: geoposition was updated on %s", device.UUID, device.Geolocation))
 	return nil
 }
 
 func (s *DeviceService) UpdateEmail(ctx context.Context, uuid, email string) error {
-	device, err := s.repoDevice.Get(ctx, uuid)
+	device, err := s.repoDevice.GetByUUID(ctx, uuid)
 	if err != nil {
 		return err
 	}
@@ -126,6 +142,7 @@ func (s *DeviceService) UpdateEmail(ctx context.Context, uuid, email string) err
 	if err != nil {
 		return err
 	}
+	logger.Logger.Info(fmt.Sprintf("device %s: e-mail was updated on %s", device.UUID, device.Email))
 	return nil
 }
 
@@ -134,5 +151,6 @@ func (s *DeviceService) Delete(ctx context.Context, uuid string) error {
 	if err != nil {
 		return err
 	}
+		logger.Logger.Info(fmt.Sprintf("device %s was deleted", uuid))
 	return nil
 }

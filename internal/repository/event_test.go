@@ -18,6 +18,7 @@ func TestCreateEvent(t *testing.T) {
 	ctx := context.Background()
 	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	defer mt.Close()
+	
 	mt.Run("success", func(mt *mtest.T) {
 		userCollection = mt.Coll
 		id := primitive.NewObjectID()

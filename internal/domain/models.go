@@ -8,7 +8,7 @@ import (
 
 type Device struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty"`
-	UUID        string             `bson:"uuid"`
+	UUID        string             `bson:"uuid,omitempty"`
 	Platform    string             `bson:"platform"`
 	Language    string             `bson:"language"`
 	Geolocation string             `bson:"geolocation"`

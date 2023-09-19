@@ -31,14 +31,14 @@ func main() {
 	if err != nil {
 		return
 	}
-	
+
 	kafkaProducer := producer.NewKafkaProducer(cfg.KafkaConfig)
 
 	deviceRepository := repository.NewDeviceRepository(mdb)
 	eventRepository := repository.NewEventRepository(mdb)
 	deviceService := service.NewDeviceService(deviceRepository)
 	eventService := service.NewEventService(deviceRepository, eventRepository)
-	deviceHandler := device.NewDeviceHandler(deviceService)
+	deviceHandler := device.NewDeviceHandler(deviceService, kafkaProducer)
 	eventHandler := event.NewEventHandler(eventService, kafkaProducer)
 
 	kafkaConsumer := consumer.NewKafkaConsumer(cfg.KafkaConfig, deviceService, eventService)

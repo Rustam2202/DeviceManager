@@ -2,6 +2,7 @@ package database
 
 import (
 	"device-manager/internal/logger"
+	"fmt"
 	"time"
 
 	"context"
@@ -17,17 +18,16 @@ type DataBaseMongo struct {
 }
 
 func NewMongo(cfg *MongoDbConfig) (*DataBaseMongo, error) {
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-
-	// clientOptions := options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%d/", cfg.Host, cfg.Port))
-	clientOptions := options.Client().ApplyURI("mongodb://0.0.0.0:27017")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	clientOptions := options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%d/", cfg.Host, cfg.Port))
+	// clientOptions := options.Client().ApplyURI("mongodb://0.0.0.0:27017")
 	client, err := mongo.Connect(ctx, clientOptions)
-	// defer func() {
-	// 	cancel()
-	// 	if err := client.Disconnect(ctx); err != nil {
-	// 		logger.Logger.Error("Disconnect error.", zap.Error(err))
-	// 	}
-	// }()
+	defer func() {
+		cancel()
+		if err := client.Disconnect(ctx); err != nil {
+			logger.Logger.Error("Disconnect error.", zap.Error(err))
+		}
+	}()
 	if err != nil {
 		logger.Logger.Error("Failed to create connection to Mongo database.", zap.Error(err))
 		return nil, err

@@ -1,6 +1,7 @@
 package event
 
 import (
+	"device-manager/internal/kafka"
 	"device-manager/internal/server/handlers"
 	"encoding/json"
 	"net/http"
@@ -41,7 +42,7 @@ func (h *EventHandler) AddEventRequest(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to marshal request for kafka", Error: err})
 		return
 	}
-	err = h.Producer.WriteMessage(ctx, "event-create", bytes)
+	err = h.Producer.WriteMessage(ctx, kafka.EventCreate, bytes)
 	// err = h.service.CreateEvent(ctx, req.UUID, req.Name, req.Attributes)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,

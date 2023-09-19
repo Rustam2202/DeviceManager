@@ -21,13 +21,11 @@ func TestCreateDevice(t *testing.T) {
 	defer mt.Close()
 	mt.Run("success", func(mt *mtest.T) {
 		userCollection = mt.Coll
-		id := primitive.NewObjectID()
 		mt.AddMockResponses(mtest.CreateSuccessResponse())
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
 		})
 		device, err := repo.Create(ctx, &domain.Device{
-			ID:          id,
 			UUID:        "test-uuid",
 			Platform:    "mac",
 			Language:    "en",
@@ -35,22 +33,16 @@ func TestCreateDevice(t *testing.T) {
 			Email:       "test@email.com",
 		})
 		assert.Nil(t, err)
-		assert.Equal(t, id, device.ID)
+		assert.NotNil(t, device)
 	})
-	mt.Run("error", func(mt *mtest.T) {
+	mt.Run("empty uuid", func(mt *mtest.T) {
 		userCollection = mt.Coll
-		id := primitive.NewObjectID()
 		mt.AddMockResponses(bson.D{{Key: "error", Value: 0}})
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
 		})
 		device, err := repo.Create(ctx, &domain.Device{
-			ID:          id,
-			UUID:        "test-uuid",
-			Platform:    "mac",
-			Language:    "en",
-			Geolocation: "here",
-			Email:       "test@email.com",
+			UUID: "",
 		})
 		assert.Nil(t, device)
 		assert.NotNil(t, err)
@@ -99,7 +91,7 @@ func TestGet(t *testing.T) {
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
 		})
-		response, err := repo.Get(ctx, "test-uuid")
+		response, err := repo.GetByUUID(ctx, "test-uuid")
 		assert.Nil(t, err)
 		assert.Equal(t, expect, *response)
 	})
@@ -109,7 +101,7 @@ func TestGet(t *testing.T) {
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
 		})
-		response, err := repo.Get(ctx, "test-uuid")
+		response, err := repo.GetByUUID(ctx, "test-uuid")
 		assert.Nil(t, response)
 		assert.NotNil(t, err)
 	})

@@ -37,7 +37,6 @@ func (r *KafkaConsumer) eventCreateServe(ctx context.Context, msg kafka.Message)
 			continue
 		}
 	}
-
 	err = r.eventService.CreateEvent(ctx, req.UUID, req.Name, validAttributes)
 	if err != nil {
 		logger.Logger.Error("Failed to add Event to db.", zap.Error(err))
