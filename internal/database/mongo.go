@@ -19,8 +19,7 @@ type DataBaseMongo struct {
 
 func NewMongo(cfg *MongoDbConfig) (*DataBaseMongo, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	clientOptions := options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%d/", cfg.Host, cfg.Port))
-	// clientOptions := options.Client().ApplyURI("mongodb://0.0.0.0:27017")
+	clientOptions := options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%d/%s", cfg.Host, cfg.Port, cfg.Name))
 	client, err := mongo.Connect(ctx, clientOptions)
 	defer func() {
 		cancel()

@@ -2,8 +2,8 @@ package consumer
 
 import (
 	"context"
-	"fmt"
 	"device-manager/internal/logger"
+	"fmt"
 	"sync"
 
 	"github.com/segmentio/kafka-go"
@@ -38,6 +38,12 @@ func (r *KafkaConsumer) RunReader(ctx context.Context, wg *sync.WaitGroup,
 					return
 				default:
 					msg, err := reader.ReadMessage(ctx)
+					// if err != nil {
+					// 	if err.Error() == "[27] Rebalance In Progress" {
+					// 		time.Sleep(1 * time.Second)
+					// 		continue
+					// 	}
+					// }
 					if err != nil {
 						logger.Logger.Error("Failed to read message: ", zap.Error(err))
 						continue
