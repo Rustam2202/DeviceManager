@@ -12,7 +12,7 @@ docker-build:
 docker-run:
 	docker run -p 8081:8080 device-manager
 compose:
-	docker-compose up -d
+	docker-compose up -d --build
 	
 docker-debug-build:
 	docker build --file Dockerfile.debug --tag device-manager-debugger .

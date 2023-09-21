@@ -1,10 +1,6 @@
 ServerHTTPConfig:
-  host: localhost
+  host: 
   port: 8080
-ServerGRPCKafkaConfig:
-  network: "tcp"
-  host: localhost
-  port: 50051
   
 DatabaseConfig:
   host: mongodb

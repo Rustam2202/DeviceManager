@@ -9,9 +9,12 @@ services:
     ports:
       - "8083:8080"
       - "4040:4000"
+    depends_on:
+      - mongodb
+      - kafka
 
   app:
-    container_name: Device-manager
+    container_name: device-manager
     build:
       context: .
       dockerfile: dockerfile
@@ -22,7 +25,7 @@ services:
       - kafka
 
   mongodb:
-    container_name: MongoDB
+    container_name: mongodb
     image: mongo
     restart: always
     ports:
