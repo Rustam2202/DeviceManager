@@ -1,17 +1,17 @@
 version: '3'
 services:
 
-  debug:
-    container_name: Device-manager-debugger
-    build: 
-      context: .
-      dockerfile: Dockerfile.debug
-    ports:
-      - "8083:8080"
-      - "4040:4000"
-    depends_on:
-      - mongodb
-      - kafka
+  # debug:
+  #   container_name: Device-manager-debugger
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile.debug
+  #   ports:
+  #     - "8083:8080"
+  #     - "4040:4000"
+  #   depends_on:
+  #     - mongodb
+  #     - kafka
 
   app:
     container_name: device-manager
@@ -53,7 +53,3 @@ services:
       - KAFKA_CREATE_TOPICS=event-create
     depends_on:
       - zookeeper
-
-networks:
-  localhost:
-    external: true

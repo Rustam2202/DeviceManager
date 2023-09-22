@@ -12,7 +12,7 @@
             "program": "${workspaceFolder}/cmd/main.go",
             "args": [
                 "-confpath",
-                "${workspaceFolder}/"
+                "${workspaceFolder}/cmd"
             ]
         },
         {

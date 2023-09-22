@@ -46,7 +46,7 @@ func (s *DeviceService) CreateDevice(ctx context.Context, uuid, platform, lang, 
 	}
 	dev, _ := s.GetDeviceInfo(ctx, uuid)
 	// if err != nil {
-	// 	return fmt.Errorf("validation uuid error")
+	// 	return err
 	// }
 	if dev != nil {
 		return fmt.Errorf("devise %s already exist", dev.UUID)
@@ -151,6 +151,6 @@ func (s *DeviceService) Delete(ctx context.Context, uuid string) error {
 	if err != nil {
 		return err
 	}
-		logger.Logger.Info(fmt.Sprintf("device %s was deleted", uuid))
+	logger.Logger.Info(fmt.Sprintf("device %s was deleted", uuid))
 	return nil
 }

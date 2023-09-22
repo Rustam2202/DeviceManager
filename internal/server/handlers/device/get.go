@@ -9,15 +9,15 @@ import (
 	"go.uber.org/zap"
 )
 
-// @Summary		Get a device
-// @Description	Get a device from database
-// @Tags			Device
-// @Accept			json
-// @Produce		json
-// @Param			uuid	path		string	true	"Device UUID"
-// @Success		200		{object}	domain.Device
-// @Failure		404		{object}	handlers.ErrorResponce
-// @Router			/device/{uuid} [get]
+//	@Summary		Get a device
+//	@Description	Get a device from database
+//	@Tags			Device
+//	@Accept			json
+//	@Produce		json
+//	@Param			uuid	path		string	true	"Device UUID"
+//	@Success		200		{object}	domain.Device
+//	@Failure		404		{object}	handlers.ErrorResponce
+//	@Router			/device/{uuid} [get]
 func (h *DeviceHandler) GetDevice(ctx *gin.Context) {
 	req := ctx.Param("uuid")
 	device, err := h.service.GetDeviceInfo(ctx, req)
