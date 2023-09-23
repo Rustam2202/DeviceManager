@@ -88,14 +88,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/domain.Device"
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/handlers.ErrorResponce"
                         }
@@ -484,6 +478,9 @@ const docTemplate = `{
                 "attributes": {
                     "type": "array",
                     "items": {}
+                },
+                "createdAt": {
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"

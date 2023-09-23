@@ -6,6 +6,7 @@ build:
 swag:
 	swag fmt
 	swag init -g ./internal/server/server.go
+	redoc-cli bundle ./docs/swagger.json -o ./docs/swagger.html
 
 docker-build:
 	docker build --tag device-manager .

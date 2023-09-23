@@ -67,6 +67,8 @@ definitions:
       attributes:
         items: {}
         type: array
+      createdAt:
+        type: string
       name:
         type: string
       uuid:
@@ -155,12 +157,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/domain.Device'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/handlers.ErrorResponce'
       summary: Get a device
