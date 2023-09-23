@@ -4,13 +4,7 @@
 REST-API server to store devices data and them events in database.
 
 ## API Reference
-[here](./docs/swagger.html)
-
-
-## Appendix
-
-Any additional information goes here
-
+https://rustam2202.github.io/DeviceManager/
 
 ## Run Locally
 
@@ -49,11 +43,6 @@ To run tests and generate HTML coverage report
 ```
 
 
-## Documentation
-
-[Documentation](https://linktodocumentation)
-
-
 ## Tech Stack
 
 - [Gin-Gonic](https://github.com/gin-gonic/gin)
@@ -65,14 +54,4 @@ To run tests and generate HTML coverage report
 - Graceful Shutdown: The application gracefully handles shutdown signals to ensure all pending requests are completed before shutting down.
 - Panic Recovery: The application recovers from panics to prevent crashes and logs detailed error information.
 - [Swagger](https://github.com/swaggo/swag): An annotation-based Go library for automatically generating Swagger documentation for API endpoints.
-
-## Usage/Examples
-
-```javascript
-import Component from 'my-project'
-
-function App() {
-  return <Component />
-}
-```
 
