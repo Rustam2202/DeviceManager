@@ -55,3 +55,6 @@ To run tests and generate HTML coverage report
 - Panic Recovery: The application recovers from panics to prevent crashes and logs detailed error information.
 - [Swagger](https://github.com/swaggo/swag): An annotation-based Go library for automatically generating Swagger documentation for API endpoints.
 
+
+## Roadmap
+- Fix docker debugger
