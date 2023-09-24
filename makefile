@@ -6,7 +6,7 @@ build:
 swag:
 	swag fmt
 	swag init -g ./internal/server/server.go
-	npx @redocly/cli build-docs ./docs/swagger.json -o ./docs/swagger.html
+	npx @redocly/cli build-docs ./docs/swagger.json -o ./docs/index.html
 
 docker-build:
 	docker build --tag device-manager .
@@ -31,10 +31,3 @@ test:
 test-cover-report:
 	make test
 	go tool cover -html=coverage.out
-
-# zookeeper-run:
-# 	bin/zookeeper-server-start.sh config/zookeeper.properties
-# 	bin/windows/zookeeper-server-start.bat config/zookeeper.properties
-# kafka-run:
-# 	bin/kafka-server-start.sh config/server.properties
-# 	bin/windows/kafka-server-start.bat config/server.properties
