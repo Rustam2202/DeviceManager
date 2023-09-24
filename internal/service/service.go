@@ -12,7 +12,7 @@ import (
 
 type DeviceRepository interface {
 	Create(context.Context, *domain.Device) (*domain.Device, error)
-	GetByID(context.Context, primitive.ObjectID) (*domain.Device, error)
+	// GetByID(context.Context, primitive.ObjectID) (*domain.Device, error)
 	GetByUUID(context.Context, string) (*domain.Device, error)
 	Update(context.Context, *domain.Device) error
 	Delete(context.Context, string) error

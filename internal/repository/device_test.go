@@ -13,14 +13,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/integration/mtest"
 )
 
-var userCollection *mongo.Collection
+var eventsCollection *mongo.Collection
 
 func TestCreateDevice(t *testing.T) {
 	ctx := context.Background()
 	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	defer mt.Close()
 	mt.Run("success", func(mt *mtest.T) {
-		userCollection = mt.Coll
+		eventsCollection = mt.Coll
 		mt.AddMockResponses(mtest.CreateSuccessResponse())
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
@@ -36,7 +36,7 @@ func TestCreateDevice(t *testing.T) {
 		assert.NotNil(t, device)
 	})
 	mt.Run("empty uuid", func(mt *mtest.T) {
-		userCollection = mt.Coll
+		eventsCollection = mt.Coll
 		mt.AddMockResponses(bson.D{{Key: "error", Value: 0}})
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
@@ -48,7 +48,7 @@ func TestCreateDevice(t *testing.T) {
 		assert.NotNil(t, err)
 	})
 	mt.Run("dublicate", func(mt *mtest.T) {
-		userCollection = mt.Coll
+		eventsCollection = mt.Coll
 		mt.AddMockResponses(mtest.CreateWriteErrorsResponse(mtest.WriteError{
 			Index:   1,
 			Code:    11000,
@@ -70,7 +70,7 @@ func TestGet(t *testing.T) {
 	defer mt.Close()
 
 	mt.Run("success", func(mt *mtest.T) {
-		userCollection = mt.Coll
+		eventsCollection = mt.Coll
 		id := primitive.NewObjectID()
 		expect := domain.Device{
 			ID:          id,
@@ -96,7 +96,7 @@ func TestGet(t *testing.T) {
 		assert.Equal(t, expect, *response)
 	})
 	mt.Run("error", func(mt *mtest.T) {
-		userCollection = mt.Coll
+		eventsCollection = mt.Coll
 		mt.AddMockResponses(bson.D{{Key: "error", Value: 0}})
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
@@ -113,7 +113,7 @@ func TestUpdate(t *testing.T) {
 	defer mt.Close()
 
 	mt.Run("success", func(mt *mtest.T) {
-		userCollection = mt.Coll
+		eventsCollection = mt.Coll
 		id := primitive.NewObjectID()
 		device := domain.Device{
 			ID:          id,
@@ -147,7 +147,7 @@ func TestDelete(t *testing.T) {
 	defer mt.Close()
 
 	mt.Run("success", func(mt *mtest.T) {
-		userCollection = mt.Coll
+		eventsCollection = mt.Coll
 		mt.AddMockResponses(bson.D{
 			{Key: "ok", Value: 1},
 			{Key: "acknowledged", Value: true},
@@ -161,7 +161,7 @@ func TestDelete(t *testing.T) {
 	})
 
 	mt.Run("no document deleted", func(mt *mtest.T) {
-		userCollection = mt.Coll
+		eventsCollection = mt.Coll
 		mt.AddMockResponses(bson.D{
 			{Key: "ok", Value: 1},
 			{Key: "acknowledged", Value: true},
