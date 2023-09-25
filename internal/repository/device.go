@@ -31,17 +31,6 @@ func (r *DeviceRepository) Create(ctx context.Context, device *domain.Device) (*
 	return device, nil
 }
 
-// func (r *DeviceRepository) GetByID(ctx context.Context, id primitive.ObjectID) (*domain.Device, error) {
-// 	var result domain.Device
-// 	err := r.MongoDB.MDB.
-// 		Collection(r.CollectionName).
-// 		FindOne(ctx, bson.M{"_id": id}).Decode(&result)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return &result, nil
-// }
-
 func (r *DeviceRepository) GetByUUID(ctx context.Context, uuid string) (*domain.Device, error) {
 	var result domain.Device
 	err := r.MongoDB.MDB.
@@ -79,6 +68,7 @@ func (r *DeviceRepository) Delete(ctx context.Context, uuid string) error {
 		return err
 	}
 	if result.DeletedCount == 0 {
+		// return mongo.ErrNoDocuments
 		return errors.New("no document deleted")
 	}
 	return nil

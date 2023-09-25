@@ -26,14 +26,23 @@ func TestCreateDevice(t *testing.T) {
 			MDB: mt.DB,
 		})
 		device, err := repo.Create(ctx, &domain.Device{
-			UUID:        "test-uuid",
-			Platform:    "mac",
-			Language:    "en",
-			Geolocation: "here",
-			Email:       "test@email.com",
+			UUID: "test-uuid",
 		})
 		assert.Nil(t, err)
 		assert.NotNil(t, device)
+		assert.NotEmpty(t, device.ID)
+	})
+	mt.Run("error", func(mt *mtest.T) {
+		eventsCollection = mt.Coll
+		mt.AddMockResponses(bson.D{{Key: "error", Value: 0}})
+		repo := NewDeviceRepository(&database.DataBaseMongo{
+			MDB: mt.DB,
+		})
+		device, err := repo.Create(ctx, &domain.Device{
+			UUID: "test-uuid",
+		})
+		assert.Nil(t, device)
+		assert.NotNil(t, err)
 	})
 	mt.Run("empty uuid", func(mt *mtest.T) {
 		eventsCollection = mt.Coll
@@ -42,7 +51,7 @@ func TestCreateDevice(t *testing.T) {
 			MDB: mt.DB,
 		})
 		device, err := repo.Create(ctx, &domain.Device{
-			UUID: "",
+			UUID: "test-uuid",
 		})
 		assert.Nil(t, device)
 		assert.NotNil(t, err)
@@ -80,7 +89,7 @@ func TestGet(t *testing.T) {
 			Geolocation: "here",
 			Email:       "test@email.com",
 		}
-		mt.AddMockResponses(mtest.CreateCursorResponse(1, "foo.bar", mtest.FirstBatch, bson.D{
+		mt.AddMockResponses(mtest.CreateCursorResponse(1, "test.devices", mtest.FirstBatch, bson.D{
 			{Key: "_id", Value: expect.ID},
 			{Key: "uuid", Value: expect.UUID},
 			{Key: "platform", Value: expect.Platform},
@@ -139,6 +148,52 @@ func TestUpdate(t *testing.T) {
 		err := repo.Update(ctx, &device)
 		assert.Nil(t, err)
 	})
+	mt.Run("error", func(mt *mtest.T) {
+		eventsCollection = mt.Coll
+		mt.AddMockResponses(bson.D{{Key: "error", Value: 0}})
+		id := primitive.NewObjectID()
+		device := domain.Device{
+			ID:          id,
+			UUID:        "test-uuid",
+			Platform:    "mac",
+			Language:    "en",
+			Geolocation: "here",
+			Email:       "test@email.com",
+		}
+		repo := NewDeviceRepository(&database.DataBaseMongo{
+			MDB: mt.DB,
+		})
+		err := repo.Update(ctx, &device)
+		assert.NotNil(t, err)
+	})
+	mt.Run("not modified", func(mt *mtest.T) {
+		eventsCollection = mt.Coll
+		id := primitive.NewObjectID()
+		device := domain.Device{
+			ID:          id,
+			UUID:        "test-uuid",
+			Platform:    "mac",
+			Language:    "en",
+			Geolocation: "here",
+			Email:       "test@email.com",
+		}
+		mockResult := mongo.UpdateResult{
+			MatchedCount:  1,
+			ModifiedCount: 0,
+		}
+		mockResponse := bson.D{
+			{Key: "ok", Value: 1},
+			{Key: "n", Value: mockResult.MatchedCount},
+			{Key: "nModified", Value: mockResult.ModifiedCount},
+		}
+		mt.AddMockResponses(mockResponse)
+		repo := NewDeviceRepository(&database.DataBaseMongo{
+			MDB: mt.DB,
+		})
+		err := repo.Update(ctx, &device)
+		assert.NotNil(t, err)
+		assert.Error(t, mongo.ErrNoDocuments)
+	})
 }
 
 func TestDelete(t *testing.T) {
@@ -156,10 +211,18 @@ func TestDelete(t *testing.T) {
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
 		})
-		err := repo.Delete(ctx, "")
+		err := repo.Delete(ctx, "test-uuid")
 		assert.Nil(t, err)
 	})
-
+	mt.Run("error", func(mt *mtest.T) {
+		eventsCollection = mt.Coll
+		mt.AddMockResponses(bson.D{{Key: "error", Value: 0}})
+		repo := NewDeviceRepository(&database.DataBaseMongo{
+			MDB: mt.DB,
+		})
+		err := repo.Delete(ctx, "test-uuid")
+		assert.NotNil(t, err)
+	})
 	mt.Run("no document deleted", func(mt *mtest.T) {
 		eventsCollection = mt.Coll
 		mt.AddMockResponses(bson.D{
@@ -170,7 +233,7 @@ func TestDelete(t *testing.T) {
 		repo := NewDeviceRepository(&database.DataBaseMongo{
 			MDB: mt.DB,
 		})
-		err := repo.Delete(ctx, "")
+		err := repo.Delete(ctx, "test-uuid")
 		assert.NotNil(t, err)
 	})
 }

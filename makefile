@@ -1,5 +1,5 @@
 run:
-	go run ./cmd/main.go
+	go run ./cmd/main.go -confpath=./cmd/
 build:
 	go build -o bin/device-manager ./cmd/main.go
 
@@ -31,3 +31,10 @@ test:
 test-cover-report:
 	make test
 	go tool cover -html=coverage.out
+
+# zookeeper-run:
+# 	bin/zookeeper-server-start.sh config/zookeeper.properties
+# 	bin/windows/zookeeper-server-start.bat config/zookeeper.properties
+# kafka-run:
+# 	bin/kafka-server-start.sh config/server.properties
+#   bin/windows/kafka-server-start.bat config/server.properties

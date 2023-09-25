@@ -19,7 +19,7 @@ type DeviceRepository interface {
 }
 
 type EventRepository interface {
-	Create(context.Context, *domain.Event) error
+	Create(context.Context, *domain.Event) (*domain.Event, error)
 	Get(context.Context, primitive.ObjectID, time.Time, time.Time) ([]domain.Event, error)
 }
 
@@ -76,7 +76,7 @@ func (s *EventService) CreateEvent(ctx context.Context, uuid, name string, attri
 		CreatedAt:  time.Now(),
 		Attributes: attributes,
 	}
-	err = s.repoEvent.Create(ctx, &event)
+	_, err = s.repoEvent.Create(ctx, &event)
 	if err != nil {
 		return nil
 	}
