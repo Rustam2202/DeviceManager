@@ -7,19 +7,21 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type DeviceRepository interface {
-	Create(context.Context, *domain.Device) (*domain.Device, error)
-	// GetByID(context.Context, primitive.ObjectID) (*domain.Device, error)
-	GetByUUID(context.Context, string) (*domain.Device, error)
-	Update(context.Context, *domain.Device) error
+	Create(context.Context, *domain.Device) error
+	Get(context.Context, string) (*domain.Device, error)
+	UpdateLanguage(context.Context, uuid.UUID, string) error
+	UpdateGeolocation(context.Context, uuid.UUID, []float64) error
+	UpdateEmail(context.Context, uuid.UUID, string) error
 	Delete(context.Context, string) error
 }
 
 type EventRepository interface {
-	Create(context.Context, *domain.Event) (*domain.Event, error)
+	Create(context.Context, *domain.Event) error
 	Get(context.Context, primitive.ObjectID, time.Time, time.Time) ([]domain.Event, error)
 }
 
@@ -51,7 +53,7 @@ func (s *DeviceService) CreateDevice(ctx context.Context, uuid, platform, lang, 
 	if dev != nil {
 		return fmt.Errorf("devise %s already exist", dev.UUID)
 	}
-	device, err := s.repoDevice.Create(ctx, &domain.Device{
+	 err := s.repoDevice.Create(ctx, &domain.Device{
 		UUID:        uuid,
 		Platform:    platform,
 		Language:    lang,

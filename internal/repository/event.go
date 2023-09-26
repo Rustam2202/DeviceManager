@@ -4,7 +4,6 @@ import (
 	"context"
 	"device-manager/internal/database"
 	"device-manager/internal/domain"
-	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -12,36 +11,25 @@ import (
 )
 
 type EventRepository struct {
-	CollectionName       string
-	DeviceCollectionName string
-	MongoDB              *database.DataBaseMongo
+	CollectionName string
+	MongoDB        *database.DataBaseMongo
 }
 
 func NewEventRepository(mdb *database.DataBaseMongo) *EventRepository {
-	return &EventRepository{CollectionName: "events", DeviceCollectionName: "devices", MongoDB: mdb}
+	return &EventRepository{CollectionName: "events", MongoDB: mdb}
 }
 
-func (r *EventRepository) Create(ctx context.Context, event *domain.Event) (*domain.Event, error) {
-	devicesCollection := r.MongoDB.MDB.Collection(r.DeviceCollectionName)
-	device := devicesCollection.FindOne(ctx, bson.M{"_id": event.DeviceId})
-	if device.Err() != nil {
-		return nil, fmt.Errorf("no device exist with '%s' id", event.DeviceId)
-	}
+func (r *EventRepository) Create(ctx context.Context, event *domain.Event) error {
 	eventsCollection := r.MongoDB.MDB.Collection(r.CollectionName)
 	result, err := eventsCollection.InsertOne(ctx, event)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	event.ID = result.InsertedID.(primitive.ObjectID)
-	return event, nil
+	return nil
 }
 
 func (r *EventRepository) Get(ctx context.Context, deviceId primitive.ObjectID, begin, end time.Time) ([]domain.Event, error) {
-	devicesCollection := r.MongoDB.MDB.Collection(r.DeviceCollectionName)
-	devce := devicesCollection.FindOne(ctx, bson.M{"_id": deviceId})
-	if devce.Err() != nil {
-		return nil, fmt.Errorf("no device exist with '%s' id", deviceId)
-	}
 	filter := bson.M{
 		"device_id":  deviceId,
 		"created_at": bson.M{"$gte": begin, "$lte": end},
