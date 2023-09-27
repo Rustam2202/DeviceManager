@@ -12,21 +12,13 @@ import (
 	"go.uber.org/zap"
 )
 
-type DataBaseMongo struct {
-	MDB *mongo.Database
+type Mongo struct {
+	DB *mongo.Database
 }
 
-func NewMongo(cfg *MongoDbConfig) (*DataBaseMongo, error) {
-	// ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	ctx := context.Background()
+func NewMongo(ctx context.Context, cfg *MongoDbConfig) (*Mongo, error) {
 	clientOptions := options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%d/%s", cfg.Host, cfg.Port, cfg.Name))
 	client, err := mongo.Connect(ctx, clientOptions)
-	// defer func() {
-	// 	cancel()
-	// 	if err := client.Disconnect(ctx); err != nil {
-	// 		logger.Logger.Error("Disconnect error.", zap.Error(err))
-	// 	}
-	// }()
 	if err != nil {
 		logger.Logger.Error("Failed to create connection to Mongo database.", zap.Error(err))
 		return nil, err
@@ -37,5 +29,5 @@ func NewMongo(cfg *MongoDbConfig) (*DataBaseMongo, error) {
 		return nil, err
 	}
 	db := client.Database(cfg.Name)
-	return &DataBaseMongo{MDB: db}, nil
+	return &Mongo{DB: db}, nil
 }

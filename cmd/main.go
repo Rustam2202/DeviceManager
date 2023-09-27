@@ -24,13 +24,14 @@ func main() {
 	defer stop()
 
 	cfg := config.LoadConfig()
-	logger.IntializeLogger(*cfg.LoggerConfig)
-	wg := &sync.WaitGroup{}
+	logger.MustLogger(*cfg.LoggerConfig)
 
-	mdb, err := database.NewMongo(cfg.DatabaseConfig)
+	mdb, err := database.NewMongo(ctx, cfg.DatabaseConfig)
 	if err != nil {
 		return
 	}
+
+	wg := &sync.WaitGroup{}
 
 	kafkaProducer := producer.NewKafkaProducer(cfg.KafkaConfig)
 
@@ -44,9 +45,9 @@ func main() {
 	kafkaConsumer := consumer.NewKafkaConsumer(cfg.KafkaConfig, deviceService, eventService)
 	kafkaConsumer.RunKafkaConsumer(ctx, wg)
 
-	s := server.NewHTTPServer(cfg.ServerHTTPConfig, deviceHandler, eventHandler)
+	s := server.NewHTTP(cfg.ServerHTTPConfig, deviceHandler, eventHandler)
 	wg.Add(1)
-	go s.StartHTTPServer(ctx, wg)
+	go s.StartHTTP(ctx, wg)
 
 	wg.Wait()
 }

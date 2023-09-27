@@ -23,11 +23,11 @@ type AddEventRequest struct {
 //	@Accept			json
 //	@Produce		json
 //	@Param			request	body	AddEventRequest	true	"Add Event Request"
-//	@Success		201
+//	@Success		200
 //	@Failure		400	{object}	handlers.ErrorResponce
 //	@Failure		500	{object}	handlers.ErrorResponce
 //	@Router			/event [post]
-func (h *EventHandler) AddEventRequest(ctx *gin.Context) {
+func (h *EventHandler) Add(ctx *gin.Context) {
 	var req AddEventRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
@@ -35,6 +35,7 @@ func (h *EventHandler) AddEventRequest(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
 		return
 	}
+	req.Attributes = attributesValidation(req.Attributes)
 	req.CreatedAt = time.Now()
 	bytes, err := json.Marshal(req)
 	if err != nil {
@@ -43,11 +44,29 @@ func (h *EventHandler) AddEventRequest(ctx *gin.Context) {
 		return
 	}
 	err = h.Producer.WriteMessage(ctx, kafka.EventCreate, bytes)
-	// err = h.service.CreateEvent(ctx, req.UUID, req.Name, req.Attributes)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
 			handlers.ErrorResponce{Message: "Failed to add a new person to database", Error: err})
 		return
 	}
-	ctx.JSON(http.StatusCreated, nil)
+	ctx.JSON(http.StatusOK, nil)
+}
+
+func attributesValidation(attr []interface{}) []interface{} {
+	var validAttributes []interface{}
+	for _, attr := range attr {
+		switch v := attr.(type) {
+		case string:
+			validAttributes = append(validAttributes, v)
+		case int:
+			validAttributes = append(validAttributes, v)
+		case float64:
+			validAttributes = append(validAttributes, v)
+		case bool:
+			validAttributes = append(validAttributes, v)
+		default:
+			continue
+		}
+	}
+	return validAttributes
 }

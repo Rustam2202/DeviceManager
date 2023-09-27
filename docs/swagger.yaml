@@ -1,9 +1,11 @@
 definitions:
   device.AddDeviceRequest:
     properties:
+      coordinates:
+        items:
+          type: number
+        type: array
       email:
-        type: string
-      geolocation:
         type: string
       language:
         type: string
@@ -11,6 +13,8 @@ definitions:
         type: string
       uuid:
         type: string
+    type: object
+  device.RequestDevicesByGeoposition:
     type: object
   device.UpdateEmailRequest:
     properties:
@@ -37,15 +41,15 @@ definitions:
     properties:
       email:
         type: string
-      geolocation:
-        type: string
-      id:
-        type: string
       language:
+        description: Language LanguageTag `bson:"language"`
         type: string
+      location:
+        $ref: '#/definitions/domain.Location'
       platform:
         type: string
       uuid:
+        description: ID          primitive.ObjectID `bson:"_id,omitempty"`
         type: string
     type: object
   domain.Event:
@@ -55,11 +59,20 @@ definitions:
         type: array
       createdAt:
         type: string
-      deviceId:
+      deviceUUID:
         type: string
       id:
         type: string
       name:
+        type: string
+    type: object
+  domain.Location:
+    properties:
+      coordinates:
+        items:
+          type: number
+        type: array
+      type:
         type: string
     type: object
   event.AddEventRequest:
@@ -86,6 +99,36 @@ info:
   version: "1.0"
 paths:
   /device:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Get devices by geoposition Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/device.RequestDevicesByGeoposition'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Device'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Get devices by Geoposition
+      tags:
+      - Device
     post:
       consumes:
       - application/json
@@ -100,8 +143,8 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
         "400":
           description: Bad Request
           schema:
@@ -111,6 +154,60 @@ paths:
           schema:
             $ref: '#/definitions/handlers.ErrorResponce'
       summary: Add device
+      tags:
+      - Device
+  /device/{email}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Devices Email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Device'
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Get devices by Email filter
+      tags:
+      - Device
+  /device/{language}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Devices Language
+        in: path
+        name: language
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Device'
+            type: array
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Get devices by Language filter
       tags:
       - Device
   /device/{uuid}:
@@ -143,7 +240,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get a device from database
+      description: Get device info
       parameters:
       - description: Device UUID
         in: path
@@ -157,10 +254,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/domain.Device'
-        "404":
-          description: Not Found
+        "400":
+          description: Bad Request
           schema:
             $ref: '#/definitions/handlers.ErrorResponce'
+        "404":
+          description: Not Found
       summary: Get a device
       tags:
       - Device
@@ -262,12 +361,12 @@ paths:
         name: uuid
         required: true
         type: string
-      - description: Start time
+      - description: Begin time range
         in: query
         name: timeBegin
         required: true
         type: string
-      - description: End time
+      - description: End time range
         in: query
         name: timeEnd
         required: true
@@ -306,8 +405,8 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
         "400":
           description: Bad Request
           schema:

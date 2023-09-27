@@ -18,40 +18,42 @@ import (
 	"go.uber.org/zap"
 )
 
-type HTTPServer struct {
+type HTTP struct {
 	cfg           *ServerHTTPConfig
 	HTTPServer    *http.Server
 	deviceHandler *device.DeviceHandler
 	eventHandler  *event.EventHandler
-	
 }
 
-func NewHTTPServer(cfg *ServerHTTPConfig, dh *device.DeviceHandler, eh *event.EventHandler) *HTTPServer {
-	return &HTTPServer{cfg: cfg, deviceHandler: dh, eventHandler: eh}
+func NewHTTP(cfg *ServerHTTPConfig, dh *device.DeviceHandler, eh *event.EventHandler) *HTTP {
+	return &HTTP{cfg: cfg, deviceHandler: dh, eventHandler: eh}
 }
 
 //	@title		Device Manager API
 //	@version	1.0
 //	@description
 //	@BasePath
-func (s *HTTPServer) StartHTTPServer(ctx context.Context, wg *sync.WaitGroup) {
+func (s *HTTP) StartHTTP(ctx context.Context, wg *sync.WaitGroup) {
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = "/"
 	docs.SwaggerInfo.Host = fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 
 	{
 		r.GET("/", func(ctx *gin.Context) {
-			ctx.String(http.StatusOK, "Hello world from Party Calc http server")
+			ctx.String(http.StatusOK, "Test response from Device Manager http server")
 		})
-		r.POST("/device", s.deviceHandler.AddDevice)
-		r.GET("/device/:uuid", s.deviceHandler.GetDevice)
+		r.POST("/device", s.deviceHandler.Add)
+		r.GET("/device/:uuid", s.deviceHandler.Get)
+		r.GET("/device_lang/:language", s.deviceHandler.GetByLanguage)
+		r.GET("/device_geo", s.deviceHandler.GetByGeolocation)
+		r.GET("/device_email/:email", s.deviceHandler.GetByEmail)
 		r.PUT("/device_lang", s.deviceHandler.UpdateLanguage)
 		r.PUT("/device_geo", s.deviceHandler.UpdateGeolocation)
 		r.PUT("/device_email", s.deviceHandler.UpdateEmail)
 		r.DELETE("/device/:uuid", s.deviceHandler.Delete)
-		
-		r.POST("/event", s.eventHandler.AddEventRequest)
-		r.GET("/event", s.eventHandler.GetEvents)
+
+		r.POST("/event", s.eventHandler.Add)
+		r.GET("/event", s.eventHandler.Get)
 
 		r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}

@@ -17,6 +17,52 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/device": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Device"
+                ],
+                "summary": "Get devices by Geoposition",
+                "parameters": [
+                    {
+                        "description": "Get devices by geoposition Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/device.RequestDevicesByGeoposition"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Device"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ErrorResponce"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ErrorResponce"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Add a new device to database",
                 "consumes": [
@@ -41,8 +87,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created"
+                    "200": {
+                        "description": "OK"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -59,9 +105,92 @@ const docTemplate = `{
                 }
             }
         },
+        "/device/{email}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Device"
+                ],
+                "summary": "Get devices by Email filter",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Devices Email",
+                        "name": "email",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Device"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ErrorResponce"
+                        }
+                    }
+                }
+            }
+        },
+        "/device/{language}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Device"
+                ],
+                "summary": "Get devices by Language filter",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Devices Language",
+                        "name": "language",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Device"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ErrorResponce"
+                        }
+                    }
+                }
+            }
+        },
         "/device/{uuid}": {
             "get": {
-                "description": "Get a device from database",
+                "description": "Get device info",
                 "consumes": [
                     "application/json"
                 ],
@@ -88,11 +217,14 @@ const docTemplate = `{
                             "$ref": "#/definitions/domain.Device"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/handlers.ErrorResponce"
                         }
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 }
             },
@@ -294,14 +426,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Start time",
+                        "description": "Begin time range",
                         "name": "timeBegin",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "End time",
+                        "description": "End time range",
                         "name": "timeEnd",
                         "in": "query",
                         "required": true
@@ -355,8 +487,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created"
+                    "200": {
+                        "description": "OK"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -378,10 +510,13 @@ const docTemplate = `{
         "device.AddDeviceRequest": {
             "type": "object",
             "properties": {
-                "email": {
-                    "type": "string"
+                "coordinates": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
                 },
-                "geolocation": {
+                "email": {
                     "type": "string"
                 },
                 "language": {
@@ -394,6 +529,9 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "device.RequestDevicesByGeoposition": {
+            "type": "object"
         },
         "device.UpdateEmailRequest": {
             "type": "object",
@@ -434,19 +572,18 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "geolocation": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
                 "language": {
+                    "description": "Language LanguageTag ` + "`" + `bson:\"language\"` + "`" + `",
                     "type": "string"
+                },
+                "location": {
+                    "$ref": "#/definitions/domain.Location"
                 },
                 "platform": {
                     "type": "string"
                 },
                 "uuid": {
+                    "description": "ID          primitive.ObjectID ` + "`" + `bson:\"_id,omitempty\"` + "`" + `",
                     "type": "string"
                 }
             }
@@ -461,13 +598,27 @@ const docTemplate = `{
                 "createdAt": {
                     "type": "string"
                 },
-                "deviceId": {
+                "deviceUUID": {
                     "type": "string"
                 },
                 "id": {
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.Location": {
+            "type": "object",
+            "properties": {
+                "coordinates": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "type": {
                     "type": "string"
                 }
             }

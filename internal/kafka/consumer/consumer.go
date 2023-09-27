@@ -24,10 +24,12 @@ func NewKafkaConsumer(cfg *k.KafkaConfig, ds *service.DeviceService, es *service
 
 func (r *KafkaConsumer) RunKafkaConsumer(ctx context.Context, wg *sync.WaitGroup) {
 	TopicsServe := map[string]func(context.Context, kafka.Message) error{
-		k.DeviceCreate: r.deviceCreateServe,
-		k.DeviceUpdate: r.deviceUpdateServe,
-		k.DeviceDelete: r.deviceDeleteServe,
-		k.EventCreate:  r.eventCreateServe,
+		k.DeviceCreate:            r.deviceCreate,
+		k.DeviceUpdateLanguage:    r.deviceUpdateLanguage,
+		k.DeviceUpdateGeoposition: r.deviceUpdateGeoposition,
+		k.DeviceUpdateEmail:       r.deviceUpdateEmail,
+		k.DeviceDelete:            r.deviceDelete,
+		k.EventCreate:             r.eventCreate,
 	}
 	for k, v := range TopicsServe {
 		wg.Add(1)

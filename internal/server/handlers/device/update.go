@@ -37,9 +37,7 @@ func (h *DeviceHandler) UpdateLanguage(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to marshal request for kafka", Error: err})
 		return
 	}
-	// err = h.service.UpdateLaguage(ctx, req.UUID, req.Language)
-	err = h.Producer.WriteMessage(ctx, kafka.DeviceUpdate, bytes)
-
+	err = h.Producer.WriteMessage(ctx, kafka.DeviceUpdateLanguage, bytes)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
 			handlers.ErrorResponce{Message: "Failed to add a new person to database", Error: err})
@@ -76,7 +74,7 @@ func (h *DeviceHandler) UpdateGeolocation(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to marshal request for kafka", Error: err})
 		return
 	}
-	err = h.Producer.WriteMessage(ctx, kafka.DeviceUpdate, bytes)
+	err = h.Producer.WriteMessage(ctx, kafka.DeviceUpdateLanguage, bytes)
 
 	// err = h.service.UpdateGeolocation(ctx, req.UUID, req.Geolocation)
 	if err != nil {
@@ -115,7 +113,7 @@ func (h *DeviceHandler) UpdateEmail(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to marshal request for kafka", Error: err})
 		return
 	}
-	err = h.Producer.WriteMessage(ctx, kafka.DeviceUpdate, bytes)
+	err = h.Producer.WriteMessage(ctx, kafka.DeviceUpdateLanguage, bytes)
 
 	// err = h.service.UpdateEmail(ctx, req.UUID, req.Email)
 	if err != nil {
