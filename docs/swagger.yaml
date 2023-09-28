@@ -1,20 +1,38 @@
 definitions:
-  device.AddDeviceRequest:
+  device.Coordinates:
+    properties:
+      latitude:
+        default: 37.552375
+        type: number
+      longitude:
+        default: 55.646575
+        type: number
+    type: object
+  device.DeviceRequest:
     properties:
       coordinates:
-        items:
-          type: number
-        type: array
+        $ref: '#/definitions/device.Coordinates'
       email:
+        default: some@email.com
         type: string
       language:
+        default: en-US
         type: string
       platform:
+        default: macOs
         type: string
       uuid:
+        default: f2366ac9-0663-4d0b-964f-98c388240d5c
         type: string
     type: object
   device.RequestDevicesByGeoposition:
+    properties:
+      distance:
+        type: number
+      latitude:
+        type: number
+      longitude:
+        type: number
     type: object
   device.UpdateEmailRequest:
     properties:
@@ -42,7 +60,6 @@ definitions:
       email:
         type: string
       language:
-        description: Language LanguageTag `bson:"language"`
         type: string
       location:
         $ref: '#/definitions/domain.Location'
@@ -89,6 +106,8 @@ definitions:
     type: object
   handlers.ErrorResponce:
     properties:
+      code:
+        type: integer
       error: {}
       message:
         type: string
@@ -139,7 +158,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/device.AddDeviceRequest'
+          $ref: '#/definitions/device.DeviceRequest'
       produces:
       - application/json
       responses:

@@ -82,7 +82,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/device.AddDeviceRequest"
+                            "$ref": "#/definitions/device.DeviceRequest"
                         }
                     }
                 ],
@@ -507,31 +507,56 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "device.AddDeviceRequest": {
+        "device.Coordinates": {
+            "type": "object",
+            "properties": {
+                "latitude": {
+                    "type": "number",
+                    "default": 37.552375
+                },
+                "longitude": {
+                    "type": "number",
+                    "default": 55.646575
+                }
+            }
+        },
+        "device.DeviceRequest": {
             "type": "object",
             "properties": {
                 "coordinates": {
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
+                    "$ref": "#/definitions/device.Coordinates"
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "some@email.com"
                 },
                 "language": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "en-US"
                 },
                 "platform": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "macOs"
                 },
                 "uuid": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "f2366ac9-0663-4d0b-964f-98c388240d5c"
                 }
             }
         },
         "device.RequestDevicesByGeoposition": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "distance": {
+                    "type": "number"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                }
+            }
         },
         "device.UpdateEmailRequest": {
             "type": "object",
@@ -573,7 +598,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "language": {
-                    "description": "Language LanguageTag ` + "`" + `bson:\"language\"` + "`" + `",
                     "type": "string"
                 },
                 "location": {
@@ -644,6 +668,9 @@ const docTemplate = `{
         "handlers.ErrorResponce": {
             "type": "object",
             "properties": {
+                "code": {
+                    "type": "integer"
+                },
                 "error": {},
                 "message": {
                     "type": "string"

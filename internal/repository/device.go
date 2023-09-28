@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"golang.org/x/text/language"
 )
 
 type DeviceRepository struct {
@@ -39,7 +38,7 @@ func (r *DeviceRepository) Get(ctx context.Context, uuid uuid.UUID) (*domain.Dev
 	return &result, nil
 }
 
-func (r *DeviceRepository) GetByLanguage(ctx context.Context, lang language.Tag) ([]domain.Device, error) {
+func (r *DeviceRepository) GetByLanguage(ctx context.Context, lang string) ([]domain.Device, error) {
 	filter := bson.M{
 		"language": lang,
 	}

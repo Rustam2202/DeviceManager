@@ -8,15 +8,19 @@ import (
 	"github.com/google/uuid"
 	"github.com/segmentio/kafka-go"
 	"go.uber.org/zap"
-	"golang.org/x/text/language"
 )
 
+type Coordinates struct {
+	Longitude float64 `json:"longitude"`
+	Latitude  float64 `json:"latitude"`
+}
+
 type deviceCreateMessage struct {
-	UUID        uuid.UUID    `json:"uuid"`
-	Platform    string       `json:"platform"`
-	Language    language.Tag `json:"language"`
-	Coordinates []float64    `json:"coordinates"`
-	Email       string       `json:"email"`
+	UUID        uuid.UUID   `json:"uuid"`
+	Platform    string      `json:"platform"`
+	Language    string      `json:"language"`
+	Coordinates Coordinates `json:"coordinates"`
+	Email       string      `json:"email"`
 }
 
 func (r *KafkaConsumer) deviceCreate(ctx context.Context, msg kafka.Message) error {
@@ -26,7 +30,8 @@ func (r *KafkaConsumer) deviceCreate(ctx context.Context, msg kafka.Message) err
 		logger.Logger.Error("Failed to unmarshal kafka message.", zap.Error(err))
 		return err
 	}
-	if err := r.deviceService.Create(ctx, req.UUID, req.Platform, req.Language, req.Email, req.Coordinates); err != nil {
+	if err := r.deviceService.Create(ctx, req.UUID, req.Platform, req.Language, req.Email,
+		[]float64{req.Coordinates.Longitude, req.Coordinates.Latitude}); err != nil {
 		logger.Logger.Error("Failed to add Device to db: ", zap.Error(err))
 		return err
 	}

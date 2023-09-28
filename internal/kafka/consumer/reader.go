@@ -3,7 +3,6 @@ package consumer
 import (
 	"context"
 	"device-manager/internal/logger"
-	"fmt"
 	"sync"
 
 	"github.com/segmentio/kafka-go"
@@ -19,17 +18,17 @@ func (r *KafkaConsumer) RunReader(ctx context.Context, wg *sync.WaitGroup,
 			defer func() {
 				if r := recover(); r != nil {
 					logger.Logger.Error("Panic occurred: ",
-						zap.Any(fmt.Sprintf("panic in %s reader", topic), r))
+						zap.String("panic in kafka raeder, topic: ", topic))
 				}
 			}()
 			cfg := *r.cfg
 			cfg.Topic = topic
 			reader := kafka.NewReader(cfg)
 			defer reader.Close()
-			logger.Logger.Info(fmt.Sprintf("%s reader created", topic))
+			logger.Logger.Info("kafka reader created", zap.String("topic: ", topic))
 			go func() {
 				<-ctx.Done()
-				logger.Logger.Info(fmt.Sprintf("%s reader closing ...", topic))
+				logger.Logger.Info("kafka reader closing ...")
 				reader.Close()
 			}()
 			for {
@@ -38,12 +37,6 @@ func (r *KafkaConsumer) RunReader(ctx context.Context, wg *sync.WaitGroup,
 					return
 				default:
 					msg, err := reader.ReadMessage(ctx)
-					// if err != nil {
-					// 	if err.Error() == "[27] Rebalance In Progress" {
-					// 		time.Sleep(1 * time.Second)
-					// 		continue
-					// 	}
-					// }
 					if err != nil {
 						logger.Logger.Error("Failed to read message: ", zap.Error(err))
 						continue

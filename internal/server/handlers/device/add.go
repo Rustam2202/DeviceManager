@@ -3,21 +3,24 @@ package device
 import (
 	"device-manager/internal/kafka"
 	"device-manager/internal/server/handlers"
+	"device-manager/internal/server/handlers/utils"
 	"encoding/json"
 	"net/http"
-	"net/mail"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-	"golang.org/x/text/language"
 )
 
-type AddDeviceRequest struct {
-	UUID        string    `json:"uuid"`
-	Platform    string    `json:"platform"`
-	Language    string    `json:"language"`
-	Coordinates []float64 `json:"coordinates"`
-	Email       string    `json:"email"`
+type Coordinates struct {
+	Longitude float64 `json:"longitude" default:"55.646575"`
+	Latitude  float64 `json:"latitude" default:"37.552375"`
+}
+
+type DeviceRequest struct {
+	UUID        string      `json:"uuid" default:"f2366ac9-0663-4d0b-964f-98c388240d5c"`
+	Platform    string      `json:"platform" default:"macOs"`
+	Language    string      `json:"language" default:"en-US"`
+	Coordinates Coordinates `json:"coordinates"`
+	Email       string      `json:"email" default:"some@email.com"`
 }
 
 // @Summary		Add device
@@ -25,13 +28,13 @@ type AddDeviceRequest struct {
 // @Tags			Device
 // @Accept			json
 // @Produce		json
-// @Param			request	body	AddDeviceRequest	true	"Add Device Request"
+// @Param			request	body	DeviceRequest	true	"Add Device Request"
 // @Success		200
 // @Failure		400	{object}	handlers.ErrorResponce
 // @Failure		500	{object}	handlers.ErrorResponce
 // @Router			/device [post]
 func (h *DeviceHandler) Add(ctx *gin.Context) {
-	var req AddDeviceRequest
+	var req DeviceRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest,
@@ -39,22 +42,16 @@ func (h *DeviceHandler) Add(ctx *gin.Context) {
 		return
 	}
 
-	_, err = uuid.ParseBytes([]byte(req.UUID))
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest,
-			handlers.ErrorResponce{Message: "Failed to parse UUID", Error: err})
+	if _, errResp := utils.UuidValidationAndParse(req.UUID); errResp != nil {
+		ctx.JSON(http.StatusBadRequest, errResp)
 		return
 	}
-	_, err = language.Parse(req.Language)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest,
-			handlers.ErrorResponce{Message: "Failed to parse language", Error: err})
+	if errResp := utils.LanguageValidation(req.Language); errResp != nil {
+		ctx.JSON(http.StatusBadRequest, errResp)
 		return
 	}
-	_, err = mail.ParseAddress(req.Email)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest,
-			handlers.ErrorResponce{Message: "Failed to parse E-mail", Error: err})
+	if errResp := utils.EmailValidation(req.Email); errResp != nil {
+		ctx.JSON(http.StatusBadRequest, errResp)
 		return
 	}
 

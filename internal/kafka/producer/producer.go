@@ -3,8 +3,10 @@ package producer
 import (
 	"context"
 	k "device-manager/internal/kafka"
+	"device-manager/internal/logger"
 
 	"github.com/segmentio/kafka-go"
+	"go.uber.org/zap"
 )
 
 type KafkaProducer struct {
@@ -27,5 +29,6 @@ func (w *KafkaProducer) WriteMessage(ctx context.Context, topic string, msg []by
 	if err != nil {
 		return err
 	}
+	logger.Logger.Info("message writed to kafka", zap.String("topic: ", topic))
 	return nil
 }

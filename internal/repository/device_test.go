@@ -11,7 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/integration/mtest"
-	"golang.org/x/text/language"
 )
 
 var eventsCollection *mongo.Collection
@@ -66,7 +65,7 @@ func TestGet(t *testing.T) {
 		expect := domain.Device{
 			UUID:     uuid,
 			Platform: "mac",
-			Language: language.BritishEnglish,
+			Language: "en-US",
 			Location: domain.Location{},
 			Email:    "test@email.com",
 		}
@@ -192,4 +191,42 @@ func TestDelete(t *testing.T) {
 		err := repo.Delete(ctx, uuid.New())
 		assert.NotNil(t, err)
 	})
+}
+
+func TestDeviceRepository_Delete(t *testing.T) {
+	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
+	repo := NewDeviceRepository(&database.Mongo{
+		DB: mt.DB,
+	})
+	type args struct {
+		ctx  context.Context
+		uuid uuid.UUID
+	}
+	tests := []struct {
+		name    string
+		r       *DeviceRepository
+		args    args
+		wantErr bool
+	}{{
+		name:    "success",
+		r:       repo,
+		args:    args{},
+		wantErr: false,
+	}}
+	mt = mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
+	for _, tt := range tests {
+		mt.Run(tt.name, func(mt *mtest.T) {
+			eventsCollection = mt.Coll
+			mt.AddMockResponses(bson.D{
+				{Key: "ok", Value: 1},
+				{Key: "acknowledged", Value: true},
+				{Key: "n", Value: 0},
+			})
+			repo = NewDeviceRepository(&database.Mongo{
+				DB: mt.DB,
+			})
+			err := repo.Delete(tt.args.ctx, uuid.New())
+			assert.NotNil(t, err)
+		})
+	}
 }
