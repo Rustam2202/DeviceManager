@@ -70,7 +70,7 @@ func TestGet(t *testing.T) {
 			Email:    "test@email.com",
 		}
 		mt.AddMockResponses(mtest.CreateCursorResponse(1, "test.devices", mtest.FirstBatch, bson.D{
-			{Key: "uuid", Value: expect.UUID},
+			{Key: "_id", Value: expect.UUID},
 			{Key: "platform", Value: expect.Platform},
 			{Key: "language", Value: expect.Language},
 			{Key: "geolocation", Value: expect.Location},
@@ -81,7 +81,7 @@ func TestGet(t *testing.T) {
 		})
 		response, err := repo.Get(ctx, uuid)
 		assert.Nil(t, err)
-		// assert.Equal(t, expect.UUID, response.UUID)
+		assert.Equal(t, expect.UUID, response.UUID)
 		assert.Equal(t, expect.Platform, response.Platform)
 		assert.Equal(t, expect.Language, response.Language)
 		assert.Equal(t, expect.Email, response.Email)
@@ -93,6 +93,112 @@ func TestGet(t *testing.T) {
 			DB: mt.DB,
 		})
 		response, err := repo.Get(ctx, uuid.New())
+		assert.Nil(t, response)
+		assert.NotNil(t, err)
+	})
+}
+
+func TestGetByLanguage(t *testing.T) {
+	ctx := context.Background()
+	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
+	defer mt.Close()
+
+	mt.Run("success", func(mt *mtest.T) {
+		eventsCollection = mt.Coll
+		find1 := mtest.CreateCursorResponse(1, "test.divices", mtest.FirstBatch,
+			bson.D{
+				{Key: "_id", Value: uuid.New()},
+				{Key: "language", Value: "en-US"},
+			})
+		find2 := mtest.CreateCursorResponse(1, "test.divices", mtest.NextBatch,
+			bson.D{
+				{Key: "_id", Value: uuid.New()},
+				{Key: "language", Value: "en-US"},
+			})
+		findEnd := mtest.CreateCursorResponse(0, "test.divices", mtest.NextBatch)
+		mt.AddMockResponses(find1, find2, findEnd)
+		repo := NewDeviceRepository(&database.Mongo{DB: mt.DB})
+		response, err := repo.GetByLanguage(ctx, "en-US")
+		assert.Nil(t, err)
+		assert.NotNil(t, response)
+		assert.Equal(t, 2, len(response))
+		assert.NotEmpty(t, response[0].UUID)
+		assert.NotEmpty(t, response[1].UUID)
+		assert.NotEqual(t, response[0].UUID, response[1].UUID)
+		assert.Equal(t, "en-US", response[0].Language)
+		assert.Equal(t, "en-US", response[1].Language)
+	})
+	mt.Run("find error", func(mt *mtest.T) {
+		eventsCollection = mt.Coll
+		mt.AddMockResponses(bson.D{{Key: "error", Value: 0}})
+		repo := NewDeviceRepository(&database.Mongo{DB: mt.DB})
+		response, err := repo.GetByLanguage(ctx, "")
+		assert.Nil(t, response)
+		assert.NotNil(t, err)
+	})
+	mt.Run("decode cursor error", func(mt *mtest.T) {
+		eventsCollection = mt.Coll
+		find := mtest.CreateCursorResponse(1, "test.divices", mtest.FirstBatch,
+			bson.D{
+				{Key: "_id", Value: uuid.New()},
+				{Key: "language", Value: "en-US"},
+			})
+		mt.AddMockResponses(find, bson.D{{Key: "error", Value: 0}})
+		repo := NewDeviceRepository(&database.Mongo{DB: mt.DB})
+		response, err := repo.GetByLanguage(ctx, "en-US")
+		assert.Nil(t, response)
+		assert.NotNil(t, err)
+	})
+}
+
+func TestGetByGeolocation(t *testing.T) {
+	ctx := context.Background()
+	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
+	defer mt.Close()
+
+	mt.Run("success", func(mt *mtest.T) {
+		eventsCollection = mt.Coll
+		find1 := mtest.CreateCursorResponse(1, "test.divices", mtest.FirstBatch,
+			bson.D{
+				{Key: "_id", Value: uuid.New()},
+				{Key: "language", Value: "en-US"},
+			})
+		find2 := mtest.CreateCursorResponse(1, "test.divices", mtest.NextBatch,
+			bson.D{
+				{Key: "_id", Value: uuid.New()},
+				{Key: "language", Value: "en-US"},
+			})
+		findEnd := mtest.CreateCursorResponse(0, "test.divices", mtest.NextBatch)
+		mt.AddMockResponses(find1, find2, findEnd)
+		repo := NewDeviceRepository(&database.Mongo{DB: mt.DB})
+		response, err := repo.GetByLanguage(ctx, "en-US")
+		assert.Nil(t, err)
+		assert.NotNil(t, response)
+		assert.Equal(t, 2, len(response))
+		assert.NotEmpty(t, response[0].UUID)
+		assert.NotEmpty(t, response[1].UUID)
+		assert.NotEqual(t, response[0].UUID, response[1].UUID)
+		assert.Equal(t, "en-US", response[0].Language)
+		assert.Equal(t, "en-US", response[1].Language)
+	})
+	mt.Run("find error", func(mt *mtest.T) {
+		eventsCollection = mt.Coll
+		mt.AddMockResponses(bson.D{{Key: "error", Value: 0}})
+		repo := NewDeviceRepository(&database.Mongo{DB: mt.DB})
+		response, err := repo.GetByLanguage(ctx, "")
+		assert.Nil(t, response)
+		assert.NotNil(t, err)
+	})
+	mt.Run("decode cursor error", func(mt *mtest.T) {
+		eventsCollection = mt.Coll
+		find := mtest.CreateCursorResponse(1, "test.divices", mtest.FirstBatch,
+			bson.D{
+				{Key: "_id", Value: uuid.New()},
+				{Key: "language", Value: "en-US"},
+			})
+		mt.AddMockResponses(find, bson.D{{Key: "error", Value: 0}})
+		repo := NewDeviceRepository(&database.Mongo{DB: mt.DB})
+		response, err := repo.GetByLanguage(ctx, "en-US")
 		assert.Nil(t, response)
 		assert.NotNil(t, err)
 	})

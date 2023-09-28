@@ -18,16 +18,16 @@ type AddEventRequest struct {
 	Attributes []interface{}
 }
 
-// @Summary		Add event
-// @Description	Add a new event from device to database
-// @Tags			Event
-// @Accept			json
-// @Produce		json
-// @Param			request	body	AddEventRequest	true	"Add Event Request"
-// @Success		200
-// @Failure		400	{object}	handlers.ErrorResponce
-// @Failure		500	{object}	handlers.ErrorResponce
-// @Router			/event [post]
+//	@Summary		Add event
+//	@Description	Add a new event from device to database
+//	@Tags			Event
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body	AddEventRequest	true	"Add Event Request"
+//	@Success		200
+//	@Failure		400	{object}	handlers.ErrorResponce
+//	@Failure		500	{object}	handlers.ErrorResponce
+//	@Router			/event [post]
 func (h *EventHandler) Add(ctx *gin.Context) {
 	var req AddEventRequest
 	err := ctx.ShouldBindJSON(&req)

@@ -15,7 +15,7 @@ type DeviceRepository interface {
 	Create(context.Context, *domain.Device) error
 	Get(context.Context, uuid.UUID) (*domain.Device, error)
 	GetByLanguage(context.Context, string) ([]domain.Device, error)
-	GetByGeolocation(context.Context, float64, float64, float64) ([]domain.Device, error)
+	GetByGeolocation(context.Context, float64, float64, int) ([]domain.Device, error)
 	GetByEmail(context.Context, string) ([]domain.Device, error)
 	UpdateLanguage(context.Context, uuid.UUID, string) error
 	UpdateGeolocation(context.Context, uuid.UUID, []float64) error
@@ -48,7 +48,7 @@ func NewEventService(rd DeviceRepository, re EventRepository) *EventService {
 func (s *DeviceService) Create(ctx context.Context,
 	id uuid.UUID, platform string, lang string, email string, coordinates []float64) error {
 	err := s.repoDevice.Create(ctx, &domain.Device{
-		UUID:     id,
+		UUID:     id.String(),
 		Platform: platform,
 		Language: lang,
 		Location: domain.Location{
@@ -81,7 +81,7 @@ func (s *DeviceService) GetByLanguage(ctx context.Context, lang string) ([]domai
 }
 
 func (s *DeviceService) GetByGeolocation(ctx context.Context,
-	long, lat, radius float64) ([]domain.Device, error) {
+	long, lat float64, radius int) ([]domain.Device, error) {
 	device, err := s.repoDevice.GetByGeolocation(ctx, long, lat, radius)
 	if err != nil {
 		return nil, err

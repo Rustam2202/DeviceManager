@@ -14,7 +14,7 @@ type Location struct {
 
 type Device struct {
 	// ID          primitive.ObjectID `bson:"_id,omitempty"`
-	UUID     uuid.UUID `bson:"_id"`
+	UUID     string `bson:"_id"`
 	Platform string    `bson:"platform"`
 	Language string    `json:"language"`
 	Location Location  `bson:"location"`

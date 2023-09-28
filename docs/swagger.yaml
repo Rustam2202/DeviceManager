@@ -25,15 +25,6 @@ definitions:
         default: f2366ac9-0663-4d0b-964f-98c388240d5c
         type: string
     type: object
-  device.RequestDevicesByGeoposition:
-    properties:
-      distance:
-        type: number
-      latitude:
-        type: number
-      longitude:
-        type: number
-    type: object
   device.UpdateEmailRequest:
     properties:
       email:
@@ -43,8 +34,12 @@ definitions:
     type: object
   device.UpdateGeolocationRequest:
     properties:
-      geolocation:
-        type: string
+      latitude:
+        default: 37.552375
+        type: number
+      longitude:
+        default: 55.646575
+        type: number
       uuid:
         type: string
     type: object
@@ -118,36 +113,6 @@ info:
   version: "1.0"
 paths:
   /device:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Get devices by geoposition Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/device.RequestDevicesByGeoposition'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/domain.Device'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
-        "404":
-          description: Not Found
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
-      summary: Get devices by Geoposition
-      tags:
-      - Device
     post:
       consumes:
       - application/json
@@ -173,60 +138,6 @@ paths:
           schema:
             $ref: '#/definitions/handlers.ErrorResponce'
       summary: Add device
-      tags:
-      - Device
-  /device/{email}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Devices Email
-        in: path
-        name: email
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/domain.Device'
-        "404":
-          description: Not Found
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
-      summary: Get devices by Email filter
-      tags:
-      - Device
-  /device/{language}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Devices Language
-        in: path
-        name: language
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/domain.Device'
-            type: array
-        "404":
-          description: Not Found
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
-      summary: Get devices by Language filter
       tags:
       - Device
   /device/{uuid}:
@@ -311,7 +222,72 @@ paths:
       summary: Update a device E-mail
       tags:
       - Device
+  /device_email/{email}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Devices Email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Device'
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Get devices by Email filter
+      tags:
+      - Device
   /device_geo:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: longitude
+        in: query
+        name: longitude
+        required: true
+        type: number
+      - description: latitude
+        in: query
+        name: latitude
+        required: true
+        type: number
+      - description: distance
+        in: query
+        name: distance
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Device'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Get devices by Geoposition
+      tags:
+      - Device
     put:
       consumes:
       - application/json
@@ -367,6 +343,34 @@ paths:
           schema:
             $ref: '#/definitions/handlers.ErrorResponce'
       summary: Update a device language
+      tags:
+      - Device
+  /device_lang/{language}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Devices Language
+        in: path
+        name: language
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Device'
+            type: array
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Get devices by Language filter
       tags:
       - Device
   /event:

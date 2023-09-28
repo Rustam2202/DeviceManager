@@ -39,26 +39,18 @@ func (r *DeviceRepository) Get(ctx context.Context, uuid uuid.UUID) (*domain.Dev
 }
 
 func (r *DeviceRepository) GetByLanguage(ctx context.Context, lang string) ([]domain.Device, error) {
-	filter := bson.M{
-		"language": lang,
-	}
-	cursor, err := r.MongoDB.DB.Collection(r.CollectionName).Find(ctx, filter)
+	cursor, err := r.MongoDB.DB.Collection(r.CollectionName).Find(ctx, bson.M{"language": lang})
 	if err != nil {
 		return nil, err
 	}
 	var devices []domain.Device
-	for cursor.Next(ctx) {
-		var device domain.Device
-		err := cursor.Decode(&device)
-		if err != nil {
-			return nil, err
-		}
-		devices = append(devices, device)
+	if err = cursor.All(ctx, &devices); err != nil {
+		return nil, err
 	}
 	return devices, nil
 }
 
-func (r *DeviceRepository) GetByGeolocation(ctx context.Context, long, lat, distance float64) ([]domain.Device, error) {
+func (r *DeviceRepository) GetByGeolocation(ctx context.Context, long, lat float64, distance int) ([]domain.Device, error) {
 	location := bson.D{
 		{Key: "type", Value: "Point"},
 		{Key: "coordinates", Value: []float64{long, lat}}}
@@ -66,7 +58,7 @@ func (r *DeviceRepository) GetByGeolocation(ctx context.Context, long, lat, dist
 		{Key: "location", Value: bson.D{
 			{Key: "$nearSphere", Value: bson.D{
 				{Key: "$geometry", Value: location},
-				{Key: "maxDistance", Value: distance},
+				{Key: "$maxDistance", Value: distance},
 			}},
 		}},
 	}
@@ -75,19 +67,9 @@ func (r *DeviceRepository) GetByGeolocation(ctx context.Context, long, lat, dist
 		return nil, err
 	}
 	var devices []domain.Device
-	err = cursor.All(ctx, devices)
-	if err != nil {
+	if err = cursor.All(ctx, devices); err != nil {
 		return nil, err
 	}
-
-	// for cursor.Next(ctx) {
-	// 	var device domain.Device
-	// 	err := cursor.Decode(&device)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	devices = append(devices, device)
-	// }
 	return devices, nil
 }
 
