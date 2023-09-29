@@ -11,9 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type addEventRequest struct {
-	UUID       string        `json:"uuid"`
-	Name       string        `json:"name"`
+type AddEventRequest struct {
+	UUID       string        `json:"uuid" example:"550e8400-e29b-41d4-a716-446655440000"`
+	Name       string        `json:"name" example:"device event"`
 	Attributes []interface{} `json:"attributes"`
 }
 
@@ -29,14 +29,14 @@ type addEventRequestOutput struct {
 //	@Tags			Event
 //	@Accept			json
 //	@Produce		json
-//	@Param			request	body	addEventRequest	true	"Add Event Request"
+//	@Param			request	body	AddEventRequest	true	"Add Event Request"
 //	@Success		200
 //	@Failure		400	{object}	handlers.ErrorResponce
 //	@Failure		500	{object}	handlers.ErrorResponce
 //	@Router			/event [post]
 func (h *EventHandler) Add(ctx *gin.Context) {
 	createdAt := time.Now()
-	var req addEventRequest
+	var req AddEventRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest,

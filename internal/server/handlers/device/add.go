@@ -11,16 +11,16 @@ import (
 )
 
 type Coordinates struct {
-	Longitude float64 `json:"longitude" default:"55.646575"`
-	Latitude  float64 `json:"latitude" default:"37.552375"`
+	Longitude float64 `json:"longitude" example:"55.646574"`
+	Latitude  float64 `json:"latitude" example:"37.552375"`
 }
 
 type DeviceRequest struct {
-	UUID        string      `json:"uuid" default:"f2366ac9-0663-4d0b-964f-98c388240d5c"`
-	Platform    string      `json:"platform" default:"macOs"`
-	Language    string      `json:"language" default:"en-US"`
+	UUID        string      `json:"uuid" example:"550e8400-e29b-41d4-a716-446655440000"`
+	Platform    string      `json:"platform" example:"Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"`
+	Language    string      `json:"language" example:"en-US"`
 	Coordinates Coordinates `json:"coordinates"`
-	Email       string      `json:"email" default:"some@email.com"`
+	Email       string      `json:"email" example:"example@email.com"`
 }
 
 //	@Summary		Add device
@@ -51,6 +51,10 @@ func (h *DeviceHandler) Add(ctx *gin.Context) {
 		return
 	}
 	if errResp := utils.EmailValidation(req.Email); errResp != nil {
+		ctx.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+	if errResp := utils.PlatformParse(req.Platform); errResp != nil {
 		ctx.JSON(http.StatusBadRequest, errResp)
 		return
 	}

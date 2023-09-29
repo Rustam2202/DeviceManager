@@ -494,7 +494,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/event.addEventRequest"
+                            "$ref": "#/definitions/event.AddEventRequest"
                         }
                     }
                 ],
@@ -524,11 +524,11 @@ const docTemplate = `{
             "properties": {
                 "latitude": {
                     "type": "number",
-                    "default": 37.552375
+                    "example": 37.552375
                 },
                 "longitude": {
                     "type": "number",
-                    "default": 55.646575
+                    "example": 55.646574
                 }
             }
         },
@@ -540,19 +540,19 @@ const docTemplate = `{
                 },
                 "email": {
                     "type": "string",
-                    "default": "some@email.com"
+                    "example": "example@email.com"
                 },
                 "language": {
                     "type": "string",
-                    "default": "en-US"
+                    "example": "en-US"
                 },
                 "platform": {
                     "type": "string",
-                    "default": "macOs"
+                    "example": "Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"
                 },
                 "uuid": {
                     "type": "string",
-                    "default": "f2366ac9-0663-4d0b-964f-98c388240d5c"
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         },
@@ -646,7 +646,7 @@ const docTemplate = `{
                 }
             }
         },
-        "event.addEventRequest": {
+        "event.AddEventRequest": {
             "type": "object",
             "properties": {
                 "attributes": {
@@ -654,10 +654,12 @@ const docTemplate = `{
                     "items": {}
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "device event"
                 },
                 "uuid": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         },

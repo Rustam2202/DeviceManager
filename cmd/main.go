@@ -11,21 +11,15 @@ import (
 	"device-manager/internal/server/handlers/device"
 	"device-manager/internal/server/handlers/event"
 	"device-manager/internal/service"
-	"fmt"
 
 	"context"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
-
-	"github.com/google/uuid"
 )
 
 func main() {
-	u, _ := uuid.NewRandom()
-	fmt.Println(u)
-
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 

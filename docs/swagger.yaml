@@ -2,10 +2,10 @@ definitions:
   device.Coordinates:
     properties:
       latitude:
-        default: 37.552375
+        example: 37.552375
         type: number
       longitude:
-        default: 55.646575
+        example: 55.646574
         type: number
     type: object
   device.DeviceRequest:
@@ -13,16 +13,17 @@ definitions:
       coordinates:
         $ref: '#/definitions/device.Coordinates'
       email:
-        default: some@email.com
+        example: example@email.com
         type: string
       language:
-        default: en-US
+        example: en-US
         type: string
       platform:
-        default: macOs
+        example: Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91)
+          AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1
         type: string
       uuid:
-        default: f2366ac9-0663-4d0b-964f-98c388240d5c
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
     type: object
   device.UpdateEmailRequest:
@@ -84,14 +85,16 @@ definitions:
       type:
         type: string
     type: object
-  event.addEventRequest:
+  event.AddEventRequest:
     properties:
       attributes:
         items: {}
         type: array
       name:
+        example: device event
         type: string
       uuid:
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
     type: object
   handlers.ErrorResponce:
@@ -419,7 +422,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/event.addEventRequest'
+          $ref: '#/definitions/event.AddEventRequest'
       produces:
       - application/json
       responses:

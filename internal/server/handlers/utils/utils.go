@@ -6,6 +6,7 @@ import (
 	"net/mail"
 
 	"github.com/google/uuid"
+	"github.com/mssola/useragent"
 	"golang.org/x/text/language"
 )
 
@@ -28,7 +29,15 @@ func UuidValidation(input string) *handlers.ErrorResponce {
 func EmailValidation(input string) *handlers.ErrorResponce {
 	_, err := mail.ParseAddress(input)
 	if err != nil {
-		return &handlers.ErrorResponce{Message: "Failed to parse E-ail", Error: err}
+		return &handlers.ErrorResponce{Message: "Failed to parse E-mail", Error: err}
+	}
+	return nil
+}
+
+func PlatformParse(input string) *handlers.ErrorResponce {
+	platform := useragent.New(input)
+	if platform == nil {
+		return &handlers.ErrorResponce{Message: "Empty platform value"}
 	}
 	return nil
 }
