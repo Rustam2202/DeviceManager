@@ -13,19 +13,19 @@ import (
 
 type DeviceRepository interface {
 	Create(context.Context, *domain.Device) error
-	Get(context.Context, uuid.UUID) (*domain.Device, error)
+	Get(context.Context, string) (*domain.Device, error)
 	GetByLanguage(context.Context, string) ([]domain.Device, error)
 	GetByGeolocation(context.Context, float64, float64, int) ([]domain.Device, error)
 	GetByEmail(context.Context, string) ([]domain.Device, error)
-	UpdateLanguage(context.Context, uuid.UUID, string) error
-	UpdateGeolocation(context.Context, uuid.UUID, []float64) error
-	UpdateEmail(context.Context, uuid.UUID, string) error
-	Delete(context.Context, uuid.UUID) error
+	UpdateLanguage(context.Context, string, string) error
+	UpdateGeolocation(context.Context, string, []float64) error
+	UpdateEmail(context.Context, string, string) error
+	Delete(context.Context, string) error
 }
 
 type EventRepository interface {
 	Create(context.Context, *domain.Event) error
-	Get(context.Context, uuid.UUID, time.Time, time.Time) ([]domain.Event, error)
+	Get(context.Context, string, time.Time, time.Time) ([]domain.Event, error)
 }
 
 type DeviceService struct {
@@ -64,7 +64,7 @@ func (s *DeviceService) Create(ctx context.Context,
 	return nil
 }
 
-func (s *DeviceService) Get(ctx context.Context, id uuid.UUID) (*domain.Device, error) {
+func (s *DeviceService) Get(ctx context.Context, id string) (*domain.Device, error) {
 	device, err := s.repoDevice.Get(ctx, id)
 	if err != nil {
 		return nil, err
@@ -97,7 +97,7 @@ func (s *DeviceService) GetByEmail(ctx context.Context, email string) ([]domain.
 	return device, nil
 }
 
-func (s *DeviceService) UpdateLanguage(ctx context.Context, id uuid.UUID, lang string) error {
+func (s *DeviceService) UpdateLanguage(ctx context.Context, id string, lang string) error {
 	device, err := s.repoDevice.Get(ctx, id)
 	if err != nil {
 		return err
@@ -109,11 +109,11 @@ func (s *DeviceService) UpdateLanguage(ctx context.Context, id uuid.UUID, lang s
 	if err != nil {
 		return err
 	}
-	logger.Logger.Info("language updated in db", zap.String("uuid: ", id.String()), zap.String("language", lang))
+	logger.Logger.Info("language updated in db", zap.String("uuid: ", id), zap.String("language", lang))
 	return nil
 }
 
-func (s *DeviceService) UpdateGeolocation(ctx context.Context, id uuid.UUID, coordinates []float64) error {
+func (s *DeviceService) UpdateGeolocation(ctx context.Context, id string, coordinates []float64) error {
 	device, err := s.repoDevice.Get(ctx, id)
 	if err != nil {
 		return err
@@ -125,11 +125,11 @@ func (s *DeviceService) UpdateGeolocation(ctx context.Context, id uuid.UUID, coo
 	if err != nil {
 		return err
 	}
-	logger.Logger.Info("geoposition updated in db", zap.String("uuid: ", id.String()))
+	logger.Logger.Info("geoposition updated in db", zap.String("uuid: ", id))
 	return nil
 }
 
-func (s *DeviceService) UpdateEmail(ctx context.Context, id uuid.UUID, email string) error {
+func (s *DeviceService) UpdateEmail(ctx context.Context, id, email string) error {
 	device, err := s.repoDevice.Get(ctx, id)
 	if err != nil {
 		return err
@@ -142,21 +142,21 @@ func (s *DeviceService) UpdateEmail(ctx context.Context, id uuid.UUID, email str
 	if err != nil {
 		return err
 	}
-	logger.Logger.Info("E-mail updated in db", zap.String("uuid: ", id.String()), zap.String("e-mail:", email))
+	logger.Logger.Info("E-mail updated in db", zap.String("uuid: ", id), zap.String("e-mail:", email))
 	return nil
 }
 
-func (s *DeviceService) Delete(ctx context.Context, id uuid.UUID) error {
+func (s *DeviceService) Delete(ctx context.Context, id string) error {
 	err := s.repoDevice.Delete(ctx, id)
 	if err != nil {
 		return err
 	}
-	logger.Logger.Info("device deleted from db", zap.String("uuid: ", id.String()))
+	logger.Logger.Info("device deleted from db", zap.String("uuid: ", id))
 	return nil
 }
 
 func (s *EventService) Create(ctx context.Context,
-	id uuid.UUID, name string, attributes []interface{}) error {
+	id string, name string, attributes []interface{}, createdAt time.Time) error {
 	device, err := s.repoDevice.Get(ctx, id)
 	if err != nil {
 		return err
@@ -164,22 +164,21 @@ func (s *EventService) Create(ctx context.Context,
 	if device == nil {
 		return fmt.Errorf("no device exist with '%s' uuid", id)
 	}
-	event := domain.Event{
+	err = s.repoEvent.Create(ctx, &domain.Event{
 		DeviceUUID: id,
 		Name:       name,
-		CreatedAt:  time.Now(),
+		CreatedAt:  createdAt,
 		Attributes: attributes,
-	}
-	err = s.repoEvent.Create(ctx, &event)
+	})
 	if err != nil {
-		return nil
+		return err
 	}
-	logger.Logger.Info("event added to db", zap.String("uuid", id.String()), zap.String("name", event.Name))
+	logger.Logger.Info("event added to db", zap.String("uuid", id), zap.String("name", name))
 	return nil
 }
 
 func (s *EventService) Get(ctx context.Context,
-	id uuid.UUID, begin, end time.Time, filter string) ([]domain.Event, error) {
+	id string, begin, end time.Time, filter string) ([]domain.Event, error) {
 	device, err := s.repoDevice.Get(ctx, id)
 	if err != nil {
 		return nil, err

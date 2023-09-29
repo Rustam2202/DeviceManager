@@ -45,7 +45,7 @@ func (s *HTTP) StartHTTP(ctx context.Context, wg *sync.WaitGroup) {
 		r.POST("/device", s.deviceHandler.Add)
 		r.GET("/device/:uuid", s.deviceHandler.Get)
 		r.GET("/device_lang/:language", s.deviceHandler.GetByLanguage)
-		r.GET("/device_geo/:longitude/:latitude/:distance", s.deviceHandler.GetByGeolocation)
+		r.GET("/device_geo", s.deviceHandler.GetByGeolocation)
 		r.GET("/device_email/:email", s.deviceHandler.GetByEmail)
 		r.PUT("/device_lang", s.deviceHandler.UpdateLanguage)
 		r.PUT("/device_geo", s.deviceHandler.UpdateGeolocation)

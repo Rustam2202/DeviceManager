@@ -42,7 +42,7 @@ func (h *DeviceHandler) Add(ctx *gin.Context) {
 		return
 	}
 
-	if _, errResp := utils.UuidValidationAndParse(req.UUID); errResp != nil {
+	if errResp := utils.UuidValidation(req.UUID); errResp != nil {
 		ctx.JSON(http.StatusBadRequest, errResp)
 		return
 	}

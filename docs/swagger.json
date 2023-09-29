@@ -59,7 +59,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device GET"
                 ],
                 "summary": "Get a device",
                 "parameters": [
@@ -138,7 +138,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device UPDATE"
                 ],
                 "summary": "Update a device E-mail",
                 "parameters": [
@@ -183,7 +183,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device GET"
                 ],
                 "summary": "Get devices by Email filter",
                 "parameters": [
@@ -223,7 +223,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device GET"
                 ],
                 "summary": "Get devices by Geoposition",
                 "parameters": [
@@ -281,7 +281,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device UPDATE"
                 ],
                 "summary": "Update a device geolocation",
                 "parameters": [
@@ -326,7 +326,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device UPDATE"
                 ],
                 "summary": "Update a device language",
                 "parameters": [
@@ -371,7 +371,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device GET"
                 ],
                 "summary": "Get devices by Language filter",
                 "parameters": [
@@ -484,7 +484,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/event.AddEventRequest"
+                            "$ref": "#/definitions/event.addEventRequest"
                         }
                     }
                 ],
@@ -600,7 +600,6 @@
                     "type": "string"
                 },
                 "uuid": {
-                    "description": "ID          primitive.ObjectID `bson:\"_id,omitempty\"`",
                     "type": "string"
                 }
             }
@@ -616,9 +615,6 @@
                     "type": "string"
                 },
                 "deviceUUID": {
-                    "type": "string"
-                },
-                "id": {
                     "type": "string"
                 },
                 "name": {
@@ -640,15 +636,12 @@
                 }
             }
         },
-        "event.AddEventRequest": {
+        "event.addEventRequest": {
             "type": "object",
             "properties": {
                 "attributes": {
                     "type": "array",
                     "items": {}
-                },
-                "createdAt": {
-                    "type": "string"
                 },
                 "name": {
                     "type": "string"

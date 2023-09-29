@@ -1,6 +1,5 @@
 package logger
 
-
 type LoggerConfig struct {
 	Encoding         string   `yaml:"encoding"`
 	Level            string   `yaml:"level"`

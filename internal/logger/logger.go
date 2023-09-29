@@ -15,7 +15,7 @@ func MustLogger(cfg LoggerConfig) {
 	}
 	congig.OutputPaths = cfg.OutputPaths
 	congig.ErrorOutputPaths = cfg.ErrorOutputPaths
-	congig.EncoderConfig=zap.NewProductionEncoderConfig()
+	congig.EncoderConfig = zap.NewProductionEncoderConfig()
 	Logger, err = congig.Build()
 	if err != nil {
 		panic(err.Error())

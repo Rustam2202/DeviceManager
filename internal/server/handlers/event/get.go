@@ -25,7 +25,7 @@ func (h *EventHandler) Get(ctx *gin.Context) {
 	layout := "2006-01-02T15:04:05.999-07:00"
 
 	uuidReq := ctx.Query("uuid")
-	id, errResp := utils.UuidValidationAndParse(uuidReq)
+	errResp := utils.UuidValidation(uuidReq)
 	if errResp != nil {
 		ctx.JSON(http.StatusBadRequest, errResp)
 		return
@@ -45,7 +45,7 @@ func (h *EventHandler) Get(ctx *gin.Context) {
 		return
 	}
 
-	events, err := h.Service.Get(ctx, id, tb, te, "")
+	events, err := h.Service.Get(ctx, uuidReq, tb, te, "")
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
 			handlers.ErrorResponce{Message: "Failed to get event from database", Error: err})

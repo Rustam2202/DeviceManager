@@ -17,12 +17,12 @@ func LanguageValidation(input string) *handlers.ErrorResponce {
 	return nil
 }
 
-func UuidValidationAndParse(input string) (uuid.UUID, *handlers.ErrorResponce) {
-	id, err := uuid.ParseBytes([]byte(input))
+func UuidValidation(input string) *handlers.ErrorResponce {
+	_, err := uuid.ParseBytes([]byte(input))
 	if err != nil {
-		return uuid.UUID{}, &handlers.ErrorResponce{Message: "Failed to parse UUID", Error: err}
+		return &handlers.ErrorResponce{Message: "Failed to parse UUID", Error: err}
 	}
-	return id, nil
+	return nil
 }
 
 func EmailValidation(input string) *handlers.ErrorResponce {
@@ -33,9 +33,23 @@ func EmailValidation(input string) *handlers.ErrorResponce {
 	return nil
 }
 
-func CoordinatesValidation(coord []float64) *handlers.ErrorResponce {
-	if len(coord) != 2 {
-		return &handlers.ErrorResponce{Message: "Must be 2 coordinates values"}
+func AttributesValidation(attr []interface{}) []interface{} {
+	var validAttributes []interface{}
+	for _, attr := range attr {
+		switch v := attr.(type) {
+		case string:
+			validAttributes = append(validAttributes, v)
+		case int, int8, int16, int32, int64:
+			validAttributes = append(validAttributes, v)
+		case uint, uint8, uint16, uint32, uint64:
+			validAttributes = append(validAttributes, v)
+		case float32, float64:
+			validAttributes = append(validAttributes, v)
+		case bool:
+			validAttributes = append(validAttributes, v)
+		default:
+			continue
+		}
 	}
-	return nil
+	return validAttributes
 }

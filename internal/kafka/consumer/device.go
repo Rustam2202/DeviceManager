@@ -39,8 +39,8 @@ func (r *KafkaConsumer) deviceCreate(ctx context.Context, msg kafka.Message) err
 }
 
 type deviceUpdateLanguageMessage struct {
-	UUID     uuid.UUID `json:"uuid"`
-	Language string    `json:"language"`
+	UUID     string `json:"uuid"`
+	Language string `json:"language"`
 }
 
 func (r *KafkaConsumer) deviceUpdateLanguage(ctx context.Context, msg kafka.Message) error {
@@ -58,7 +58,7 @@ func (r *KafkaConsumer) deviceUpdateLanguage(ctx context.Context, msg kafka.Mess
 }
 
 type deviceUpdateGeolocationMessage struct {
-	UUID        uuid.UUID `json:"uuid"`
+	UUID        string    `json:"uuid"`
 	Coordinates []float64 `json:"coordinates"`
 }
 
@@ -77,8 +77,8 @@ func (r *KafkaConsumer) deviceUpdateGeoposition(ctx context.Context, msg kafka.M
 }
 
 type deviceUpdateEmailMessage struct {
-	UUID  uuid.UUID `json:"uuid"`
-	Email string    `json:"email"`
+	UUID  string `json:"uuid"`
+	Email string `json:"email"`
 }
 
 func (r *KafkaConsumer) deviceUpdateEmail(ctx context.Context, msg kafka.Message) error {
@@ -96,11 +96,11 @@ func (r *KafkaConsumer) deviceUpdateEmail(ctx context.Context, msg kafka.Message
 }
 
 func (r *KafkaConsumer) deviceDelete(ctx context.Context, msg kafka.Message) error {
-	u, err := uuid.Parse(string(msg.Value))
-	if err != nil {
-		return err
-	}
-	if err := r.deviceService.Delete(ctx, u); err != nil {
+	// u, err := uuid.Parse(string(msg.Value))
+	// if err != nil {
+	// 	return err
+	// }
+	if err := r.deviceService.Delete(ctx, string(msg.Value)); err != nil {
 		logger.Logger.Error("Failed to delete Peson from db: ", zap.Error(err))
 		return err
 	}

@@ -16,7 +16,7 @@ type UpdateLanguageRequest struct {
 }
 
 //	@Summary	Update a device language
-//	@Tags		Device
+//	@Tags		Device UPDATE
 //	@Accept		json
 //	@Produce	json
 //	@Param		request	body		UpdateLanguageRequest	true	"Update Device language Request"
@@ -32,7 +32,7 @@ func (h *DeviceHandler) UpdateLanguage(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
 		return
 	}
-	if _, errResp := utils.UuidValidationAndParse(req.UUID); errResp != nil {
+	if errResp := utils.UuidValidation(req.UUID); errResp != nil {
 		ctx.JSON(http.StatusBadRequest, errResp)
 		return
 	}
@@ -50,7 +50,7 @@ func (h *DeviceHandler) UpdateLanguage(ctx *gin.Context) {
 	err = h.Producer.WriteMessage(ctx, kafka.DeviceUpdateLanguage, bytes)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
-			handlers.ErrorResponce{Message: "Failed to add a new person to database", Error: err})
+			handlers.ErrorResponce{Message: "Failed to write message to kafka", Error: err})
 		return
 	}
 	ctx.JSON(http.StatusOK, nil)
@@ -63,7 +63,7 @@ type UpdateGeolocationRequest struct {
 }
 
 //	@Summary	Update a device geolocation
-//	@Tags		Device
+//	@Tags		Device UPDATE
 //	@Accept		json
 //	@Produce	json
 //	@Param		request	body		UpdateGeolocationRequest	true	"Update Device geolocation Request"
@@ -79,7 +79,7 @@ func (h *DeviceHandler) UpdateGeolocation(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
 		return
 	}
-	if _, errResp := utils.UuidValidationAndParse(req.UUID); errResp != nil {
+	if errResp := utils.UuidValidation(req.UUID); errResp != nil {
 		ctx.JSON(http.StatusBadRequest, errResp)
 		return
 	}
@@ -89,10 +89,10 @@ func (h *DeviceHandler) UpdateGeolocation(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to marshal request for kafka", Error: err})
 		return
 	}
-	err = h.Producer.WriteMessage(ctx, kafka.DeviceUpdateLanguage, bytes)
+	err = h.Producer.WriteMessage(ctx, kafka.DeviceUpdateGeoposition, bytes)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
-			handlers.ErrorResponce{Message: "Failed to add a new person to database", Error: err})
+			handlers.ErrorResponce{Message: "Failed to write message to kafka", Error: err})
 		return
 	}
 	ctx.JSON(http.StatusOK, nil)
@@ -104,7 +104,7 @@ type UpdateEmailRequest struct {
 }
 
 //	@Summary	Update a device E-mail
-//	@Tags		Device
+//	@Tags		Device UPDATE
 //	@Accept		json
 //	@Produce	json
 //	@Param		request	body		UpdateEmailRequest	true	"Update Device E-mail Request"
@@ -120,7 +120,7 @@ func (h *DeviceHandler) UpdateEmail(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
 		return
 	}
-	if _, errResp := utils.UuidValidationAndParse(req.UUID); errResp != nil {
+	if errResp := utils.UuidValidation(req.UUID); errResp != nil {
 		ctx.JSON(http.StatusBadRequest, errResp)
 		return
 	}
@@ -135,11 +135,10 @@ func (h *DeviceHandler) UpdateEmail(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to marshal request for kafka", Error: err})
 		return
 	}
-	err = h.Producer.WriteMessage(ctx, kafka.DeviceUpdateLanguage, bytes)
-
+	err = h.Producer.WriteMessage(ctx, kafka.DeviceUpdateEmail, bytes)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
-			handlers.ErrorResponce{Message: "Failed to add a new person to database", Error: err})
+			handlers.ErrorResponce{Message: "Failed to write message to kafka", Error: err})
 		return
 	}
 	ctx.JSON(http.StatusOK, nil)

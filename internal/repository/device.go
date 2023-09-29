@@ -5,7 +5,6 @@ import (
 	"device-manager/internal/database"
 	"device-manager/internal/domain"
 
-	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -28,7 +27,7 @@ func (r *DeviceRepository) Create(ctx context.Context, device *domain.Device) er
 	return nil
 }
 
-func (r *DeviceRepository) Get(ctx context.Context, uuid uuid.UUID) (*domain.Device, error) {
+func (r *DeviceRepository) Get(ctx context.Context, uuid string) (*domain.Device, error) {
 	var result domain.Device
 	err := r.MongoDB.DB.Collection(r.CollectionName).
 		FindOne(ctx, bson.M{"_id": uuid}).Decode(&result)
@@ -67,7 +66,7 @@ func (r *DeviceRepository) GetByGeolocation(ctx context.Context, long, lat float
 		return nil, err
 	}
 	var devices []domain.Device
-	if err = cursor.All(ctx, devices); err != nil {
+	if err = cursor.All(ctx, &devices); err != nil {
 		return nil, err
 	}
 	return devices, nil
@@ -93,7 +92,7 @@ func (r *DeviceRepository) GetByEmail(ctx context.Context, email string) ([]doma
 	return devices, nil
 }
 
-func (r *DeviceRepository) UpdateLanguage(ctx context.Context, uuid uuid.UUID, lang string) error {
+func (r *DeviceRepository) UpdateLanguage(ctx context.Context, uuid string, lang string) error {
 	result, err := r.MongoDB.DB.Collection(r.CollectionName).
 		UpdateOne(ctx, bson.M{"_id": uuid}, bson.M{"$set": bson.M{"language": lang}})
 	if err != nil {
@@ -105,7 +104,7 @@ func (r *DeviceRepository) UpdateLanguage(ctx context.Context, uuid uuid.UUID, l
 	return nil
 }
 
-func (r *DeviceRepository) UpdateGeolocation(ctx context.Context, uuid uuid.UUID, coordinates []float64) error {
+func (r *DeviceRepository) UpdateGeolocation(ctx context.Context, uuid string, coordinates []float64) error {
 	result, err := r.MongoDB.DB.Collection(r.CollectionName).
 		UpdateOne(ctx, bson.M{"_id": uuid}, bson.M{"$set": bson.M{"location": domain.Location{
 			Type:        "Point",
@@ -120,7 +119,7 @@ func (r *DeviceRepository) UpdateGeolocation(ctx context.Context, uuid uuid.UUID
 	return nil
 }
 
-func (r *DeviceRepository) UpdateEmail(ctx context.Context, uuid uuid.UUID, email string) error {
+func (r *DeviceRepository) UpdateEmail(ctx context.Context, uuid string, email string) error {
 	result, err := r.MongoDB.DB.Collection(r.CollectionName).
 		UpdateOne(ctx, bson.M{"_id": uuid}, bson.M{"$set": bson.M{"email": email}})
 	if err != nil {
@@ -132,7 +131,7 @@ func (r *DeviceRepository) UpdateEmail(ctx context.Context, uuid uuid.UUID, emai
 	return nil
 }
 
-func (r *DeviceRepository) Delete(ctx context.Context, uuid uuid.UUID) error {
+func (r *DeviceRepository) Delete(ctx context.Context, uuid string) error {
 	result, err := r.MongoDB.DB.Collection(r.CollectionName).
 		DeleteOne(ctx, bson.M{"_id": uuid})
 	if err != nil {

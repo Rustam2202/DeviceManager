@@ -21,7 +21,7 @@ import (
 //	@Router			/device/{uuid} [delete]
 func (h *DeviceHandler) Delete(ctx *gin.Context) {
 	req := ctx.Param("uuid")
-	if _, errResp := utils.UuidValidationAndParse(req); errResp != nil {
+	if errResp := utils.UuidValidation(req); errResp != nil {
 		ctx.JSON(http.StatusBadRequest, errResp)
 		return
 	}
@@ -29,7 +29,7 @@ func (h *DeviceHandler) Delete(ctx *gin.Context) {
 	err := h.Producer.WriteMessage(ctx, kafka.DeviceDelete, bytes)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
-			handlers.ErrorResponce{Message: "Failed to get a person from database", Error: err})
+			handlers.ErrorResponce{Message: "Failed to write message to kafka", Error: err})
 		return
 	}
 	ctx.JSON(http.StatusOK, nil)

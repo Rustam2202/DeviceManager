@@ -4,8 +4,8 @@ import (
 	"device-manager/internal/logger"
 	"device-manager/internal/server/handlers"
 	"device-manager/internal/server/handlers/utils"
-	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -13,7 +13,7 @@ import (
 
 //	@Summary		Get a device
 //	@Description	Get device info
-//	@Tags			Device
+//	@Tags			Device GET
 //	@Accept			json
 //	@Produce		json
 //	@Param			uuid	path		string	true	"Device UUID"
@@ -23,12 +23,12 @@ import (
 //	@Router			/device/{uuid} [get]
 func (h *DeviceHandler) Get(ctx *gin.Context) {
 	req := ctx.Param("uuid")
-	id, errResp := utils.UuidValidationAndParse(req)
+	errResp := utils.UuidValidation(req)
 	if errResp != nil {
 		ctx.JSON(http.StatusBadRequest, errResp)
 		return
 	}
-	device, err := h.service.Get(ctx, id)
+	device, err := h.service.Get(ctx, req)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, nil)
 		logger.Logger.Error("Device not found", zap.Error(err))
@@ -39,7 +39,7 @@ func (h *DeviceHandler) Get(ctx *gin.Context) {
 
 //	@Summary	Get devices by Language filter
 //	@Description
-//	@Tags		Device
+//	@Tags		Device GET
 //	@Accept		json
 //	@Produce	json
 //	@Param		language	path		string	true	"Devices Language"
@@ -55,8 +55,8 @@ func (h *DeviceHandler) GetByLanguage(ctx *gin.Context) {
 	devices, err := h.service.GetByLanguage(ctx, req)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
-			handlers.ErrorResponce{Message: "Failed to get a devices from database", Error: err})
-		logger.Logger.Error("Failed to get a person from database", zap.Error(err))
+			handlers.ErrorResponce{Message: "Failed to get devices by language"})
+		logger.Logger.Error("Failed to get devices by language", zap.Error(err))
 		return
 	}
 	if devices == nil {
@@ -68,7 +68,7 @@ func (h *DeviceHandler) GetByLanguage(ctx *gin.Context) {
 
 //	@Summary	Get devices by Geoposition
 //	@Description
-//	@Tags		Device
+//	@Tags		Device GET
 //	@Accept		json
 //	@Produce	json
 //	@Param		longitude	query		number	true	"longitude"
@@ -78,24 +78,40 @@ func (h *DeviceHandler) GetByLanguage(ctx *gin.Context) {
 //	@Failure	400			{object}	handlers.ErrorResponce
 //	@Failure	404
 //	@Failure	500	{object}	handlers.ErrorResponce
-//	@Router		/device_geo{} [get]
+//	@Router		/device_geo [get]
 func (h *DeviceHandler) GetByGeolocation(ctx *gin.Context) {
-	query:=ctx.Query("longitude")
-	fmt.Printf("query: %v\n", query)
-	query1:=ctx.Query("latitude")
-	fmt.Printf("query: %v\n", query1)
-	query2:=ctx.Query("distance")
-	fmt.Printf("query: %v\n", query2)
+	queryLong := ctx.Query("longitude")
+	queryLat := ctx.Query("latitude")
+	queryDist := ctx.Query("distance")
 
-	longitude := ctx.GetFloat64("longitude")
-	latitude := ctx.GetFloat64("latitude")
-	distance := ctx.GetInt("distance")
-
-	devices, err := h.service.GetByGeolocation(ctx, longitude, latitude, distance)
+	longitude, err := strconv.ParseFloat(queryLong, 64)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
-			handlers.ErrorResponce{Message: "Failed to get a person from database", Error: err})
-		logger.Logger.Error("Failed to get devices from database", zap.Error(err))
+			handlers.ErrorResponce{Message: "Failed to parse longitude", Error: err})
+		return
+	}
+	latitude, err := strconv.ParseFloat(queryLat, 64)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError,
+			handlers.ErrorResponce{Message: "Failed to parse latitude", Error: err})
+		return
+	}
+	distance, err := strconv.ParseInt(queryDist, 10, 32)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError,
+			handlers.ErrorResponce{Message: "Failed to parse distance", Error: err})
+		return
+	}
+
+	// longitude := ctx.GetFloat64("longitude")
+	// latitude := ctx.GetFloat64("latitude")
+	// distance := ctx.GetInt("distance")
+
+	devices, err := h.service.GetByGeolocation(ctx, longitude, latitude, int(distance))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError,
+			handlers.ErrorResponce{Message: "Failed to get devices by geoposition", Error: err})
+		logger.Logger.Error("Failed to get devices by geoposition", zap.Error(err))
 		return
 	}
 	if devices == nil {
@@ -107,7 +123,7 @@ func (h *DeviceHandler) GetByGeolocation(ctx *gin.Context) {
 
 //	@Summary	Get devices by Email filter
 //	@Description
-//	@Tags		Device
+//	@Tags		Device GET
 //	@Accept		json
 //	@Produce	json
 //	@Param		email	path		string	true	"Devices Email"
@@ -123,8 +139,8 @@ func (h *DeviceHandler) GetByEmail(ctx *gin.Context) {
 	devices, err := h.service.GetByEmail(ctx, req)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
-			handlers.ErrorResponce{Message: "Failed to get devices from database", Error: err})
-		logger.Logger.Error("Failed to get devices from database", zap.Error(err))
+			handlers.ErrorResponce{Message: "Failed to get devices by E-mail", Error: err})
+		logger.Logger.Error("Failed to get devices by E-mail", zap.Error(err))
 		return
 	}
 	if devices == nil {

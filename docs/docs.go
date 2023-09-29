@@ -69,7 +69,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device GET"
                 ],
                 "summary": "Get a device",
                 "parameters": [
@@ -148,7 +148,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device UPDATE"
                 ],
                 "summary": "Update a device E-mail",
                 "parameters": [
@@ -193,7 +193,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device GET"
                 ],
                 "summary": "Get devices by Email filter",
                 "parameters": [
@@ -233,7 +233,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device GET"
                 ],
                 "summary": "Get devices by Geoposition",
                 "parameters": [
@@ -291,7 +291,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device UPDATE"
                 ],
                 "summary": "Update a device geolocation",
                 "parameters": [
@@ -336,7 +336,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device UPDATE"
                 ],
                 "summary": "Update a device language",
                 "parameters": [
@@ -381,7 +381,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "Device GET"
                 ],
                 "summary": "Get devices by Language filter",
                 "parameters": [
@@ -494,7 +494,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/event.AddEventRequest"
+                            "$ref": "#/definitions/event.addEventRequest"
                         }
                     }
                 ],
@@ -610,7 +610,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "uuid": {
-                    "description": "ID          primitive.ObjectID ` + "`" + `bson:\"_id,omitempty\"` + "`" + `",
                     "type": "string"
                 }
             }
@@ -626,9 +625,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "deviceUUID": {
-                    "type": "string"
-                },
-                "id": {
                     "type": "string"
                 },
                 "name": {
@@ -650,15 +646,12 @@ const docTemplate = `{
                 }
             }
         },
-        "event.AddEventRequest": {
+        "event.addEventRequest": {
             "type": "object",
             "properties": {
                 "attributes": {
                     "type": "array",
                     "items": {}
-                },
-                "createdAt": {
-                    "type": "string"
                 },
                 "name": {
                     "type": "string"
