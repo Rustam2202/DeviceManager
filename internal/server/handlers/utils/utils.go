@@ -34,9 +34,15 @@ func EmailValidation(input string) *handlers.ErrorResponce {
 	return nil
 }
 
-func PlatformParse(input string) *handlers.ErrorResponce {
+func PlatformValidation(input string) *handlers.ErrorResponce {
 	platform := useragent.New(input)
 	if platform == nil {
+		return &handlers.ErrorResponce{Message: "Empty Platform request"}
+	}
+	if platform.OS() == "" {
+		return &handlers.ErrorResponce{Message: "Empty OS value"}
+	}
+	if platform.Platform() == "" {
 		return &handlers.ErrorResponce{Message: "Empty platform value"}
 	}
 	return nil

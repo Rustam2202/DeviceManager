@@ -1,6 +1,8 @@
 ServerHTTPConfig:
   host: 
   port: 8080
+  envipment:
+    - ${SERVE_HTTP_CONFIG_HOST}
   
 DatabaseConfig:
   host: mongodb

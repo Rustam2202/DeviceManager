@@ -98,15 +98,7 @@ func (s *DeviceService) GetByEmail(ctx context.Context, email string) ([]domain.
 }
 
 func (s *DeviceService) UpdateLanguage(ctx context.Context, id string, lang string) error {
-	device, err := s.repoDevice.Get(ctx, id)
-	if err != nil {
-		return err
-	}
-	if device == nil {
-		return fmt.Errorf("no device exist with '%s' uuid", id)
-	}
-	err = s.repoDevice.UpdateLanguage(ctx, id, lang)
-	if err != nil {
+	if err := s.repoDevice.UpdateLanguage(ctx, id, lang); err != nil {
 		return err
 	}
 	logger.Logger.Info("language updated in db", zap.String("uuid: ", id), zap.String("language", lang))
@@ -114,15 +106,7 @@ func (s *DeviceService) UpdateLanguage(ctx context.Context, id string, lang stri
 }
 
 func (s *DeviceService) UpdateGeolocation(ctx context.Context, id string, coordinates []float64) error {
-	device, err := s.repoDevice.Get(ctx, id)
-	if err != nil {
-		return err
-	}
-	if device == nil {
-		return fmt.Errorf("no device exist with '%s' uuid", id)
-	}
-	err = s.repoDevice.UpdateGeolocation(ctx, id, coordinates)
-	if err != nil {
+	if err := s.repoDevice.UpdateGeolocation(ctx, id, coordinates); err != nil {
 		return err
 	}
 	logger.Logger.Info("geoposition updated in db", zap.String("uuid: ", id))
@@ -130,16 +114,7 @@ func (s *DeviceService) UpdateGeolocation(ctx context.Context, id string, coordi
 }
 
 func (s *DeviceService) UpdateEmail(ctx context.Context, id, email string) error {
-	device, err := s.repoDevice.Get(ctx, id)
-	if err != nil {
-		return err
-	}
-	if device == nil {
-		return fmt.Errorf("no device exist with '%s' uuid", id)
-	}
-	device.Email = email
-	err = s.repoDevice.UpdateEmail(ctx, id, email)
-	if err != nil {
+	if err := s.repoDevice.UpdateEmail(ctx, id, email); err != nil {
 		return err
 	}
 	logger.Logger.Info("E-mail updated in db", zap.String("uuid: ", id), zap.String("e-mail:", email))
@@ -147,8 +122,7 @@ func (s *DeviceService) UpdateEmail(ctx context.Context, id, email string) error
 }
 
 func (s *DeviceService) Delete(ctx context.Context, id string) error {
-	err := s.repoDevice.Delete(ctx, id)
-	if err != nil {
+	if err := s.repoDevice.Delete(ctx, id); err != nil {
 		return err
 	}
 	logger.Logger.Info("device deleted from db", zap.String("uuid: ", id))

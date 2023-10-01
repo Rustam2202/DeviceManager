@@ -58,3 +58,4 @@ To run tests and generate HTML coverage report
 
 ## Roadmap
 - Fix docker debugger
+- Expand PlatformValidation() checks

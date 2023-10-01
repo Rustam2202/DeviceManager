@@ -42,6 +42,7 @@ func (r *KafkaConsumer) RunReader(ctx context.Context, wg *sync.WaitGroup,
 						continue
 					}
 					if err = serve(ctx, msg); err != nil {
+						logger.Logger.Error("Failed to serve message: ", zap.Error(err))
 						continue
 					}
 					if err = reader.CommitMessages(ctx, msg); err != nil {

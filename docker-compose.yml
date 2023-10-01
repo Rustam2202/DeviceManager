@@ -35,9 +35,6 @@ services:
     environment:
       - KAFKA_ADVERTISED_HOST_NAME=kafka
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_CREATE_TOPICS=device-create
-      - KAFKA_CREATE_TOPICS=device-update
-      - KAFKA_CREATE_TOPICS=device-delete
-      - KAFKA_CREATE_TOPICS=event-create
+      - KAFKA_CREATE_TOPICS=device-create,device-update,device-delete,event-create
     depends_on:
       - zookeeper
