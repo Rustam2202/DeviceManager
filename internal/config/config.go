@@ -27,6 +27,9 @@ func MustLoadConfig() *Config {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(*path)
 
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("DATABASE")
+
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(err.Error())

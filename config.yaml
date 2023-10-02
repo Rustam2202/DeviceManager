@@ -1,16 +1,15 @@
 ServerHTTPConfig:
-  host: 8080
+  host: localhost #empty
   port: 8080
-  envipment:
-    - ${SERVER_HTTP_CONFIG_HOST}
+  enviroments:
   
 DatabaseConfig:
-  host: mongodb
+  host: localhost # mongodb
   port: 27017
   name: device_manager
 
 KafkaConfig:
-  brokers: kafka:9092
+  brokers: localhost:9092 # kafka:9092
   group: "group"
 
 LoggerConfig:
