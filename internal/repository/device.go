@@ -49,10 +49,10 @@ func (r *DeviceRepository) GetByLanguage(ctx context.Context, lang string) ([]do
 	return devices, nil
 }
 
-func (r *DeviceRepository) GetByGeolocation(ctx context.Context, long, lat float64, distance int) ([]domain.Device, error) {
+func (r *DeviceRepository) GetByGeolocation(ctx context.Context, coordinates []float64, distance int) ([]domain.Device, error) {
 	location := bson.D{
 		{Key: "type", Value: "Point"},
-		{Key: "coordinates", Value: []float64{long, lat}}}
+		{Key: "coordinates", Value: coordinates}}
 	filter := bson.D{
 		{Key: "location", Value: bson.D{
 			{Key: "$nearSphere", Value: bson.D{
@@ -73,21 +73,13 @@ func (r *DeviceRepository) GetByGeolocation(ctx context.Context, long, lat float
 }
 
 func (r *DeviceRepository) GetByEmail(ctx context.Context, email string) ([]domain.Device, error) {
-	filter := bson.M{
-		"email": email,
-	}
-	cursor, err := r.MongoDB.DB.Collection(r.CollectionName).Find(ctx, filter)
+	cursor, err := r.MongoDB.DB.Collection(r.CollectionName).Find(ctx, bson.M{"email": email})
 	if err != nil {
 		return nil, err
 	}
 	var devices []domain.Device
-	for cursor.Next(ctx) {
-		var device domain.Device
-		err := cursor.Decode(&device)
-		if err != nil {
-			return nil, err
-		}
-		devices = append(devices, device)
+	if err = cursor.All(ctx, &devices); err != nil {
+		return nil, err
 	}
 	return devices, nil
 }
@@ -139,7 +131,6 @@ func (r *DeviceRepository) Delete(ctx context.Context, uuid string) error {
 	}
 	if result.DeletedCount == 0 {
 		return mongo.ErrNoDocuments
-		// return errors.New("no document deleted")
 	}
 	return nil
 }

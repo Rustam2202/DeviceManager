@@ -18,7 +18,7 @@ func (r *KafkaConsumer) RunReader(ctx context.Context, wg *sync.WaitGroup,
 			defer func() {
 				if r := recover(); r != nil {
 					logger.Logger.Error("Panic occurred: ",
-						zap.String("panic in kafka raeder, topic: ", topic))
+						zap.String("panic in kafka reader, topic: ", topic))
 				}
 			}()
 			cfg := *r.cfg

@@ -1,6 +1,18 @@
 version: '3'
 services:
 
+  # debug:
+  #   container_name: Device-manager-debugger
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile.debug
+  #   ports:
+  #     - "8083:8080"
+  #     - "4040:4000"
+  #   depends_on:
+  #     - mongodb
+  #     - kafka
+
   app:
     container_name: device-manager
     build:
@@ -11,10 +23,12 @@ services:
     depends_on:
       - mongodb
       - kafka
+    environment:
+      - SERVER_HTTP_CONFIG_HOST=8085
 
   mongodb:
     container_name: mongodb
-    image: mongo
+    image: mongo:4.4.24
     restart: always
     ports:
       - 27017:27017

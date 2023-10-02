@@ -23,9 +23,8 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	cfg := config.LoadConfig()
-	logger.MustLogger(*cfg.LoggerConfig)
-
+	cfg := config.MustLoadConfig()
+	logger.MustConfigLogger(*cfg.LoggerConfig)
 	mdb := database.MustConnectMongo(ctx, cfg.DatabaseConfig)
 
 	wg := &sync.WaitGroup{}

@@ -2,6 +2,7 @@ module device-manager
 
 go 1.19
 
+
 require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/segmentio/kafka-go v0.4.42

@@ -2,10 +2,10 @@ definitions:
   device.Coordinates:
     properties:
       latitude:
-        example: 37.552375
+        example: 37.554313
         type: number
       longitude:
-        example: 55.646574
+        example: 55.646729
         type: number
     type: object
   device.DeviceRequest:
@@ -26,29 +26,34 @@ definitions:
         example: 550e8400-e29b-41d4-a716-446655440000
         type: string
     type: object
-  device.UpdateEmailRequest:
+  device.EmailRequest:
     properties:
       email:
+        example: another@email.com
         type: string
       uuid:
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
     type: object
-  device.UpdateGeolocationRequest:
+  device.GeolocationRequest:
     properties:
       latitude:
-        default: 37.552375
+        example: 37.551595
         type: number
       longitude:
-        default: 55.646575
+        example: 55.643881
         type: number
       uuid:
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
     type: object
-  device.UpdateLanguageRequest:
+  device.LanguageRequest:
     properties:
       language:
+        example: ru
         type: string
       uuid:
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
     type: object
   domain.Device:
@@ -85,7 +90,7 @@ definitions:
       type:
         type: string
     type: object
-  event.AddEventRequest:
+  event.EventRequest:
     properties:
       attributes:
         items: {}
@@ -97,7 +102,7 @@ definitions:
         example: 550e8400-e29b-41d4-a716-446655440000
         type: string
     type: object
-  handlers.ErrorResponce:
+  utils.ErrorResponce:
     properties:
       code:
         type: integer
@@ -130,11 +135,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
       summary: Add device
       tags:
       - Device
@@ -157,11 +162,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
       summary: Delete a device
       tags:
       - Device
@@ -185,7 +190,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
         "404":
           description: Not Found
       summary: Get a device
@@ -201,22 +206,20 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/device.UpdateEmailRequest'
+          $ref: '#/definitions/device.EmailRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
-          schema:
-            $ref: '#/definitions/device.UpdateEmailRequest'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
       summary: Update a device E-mail
       tags:
       - Device UPDATE
@@ -242,7 +245,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
       summary: Get devices by Email filter
       tags:
       - Device GET
@@ -276,13 +279,13 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
         "404":
           description: Not Found
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
       summary: Get devices by Geoposition
       tags:
       - Device GET
@@ -295,22 +298,20 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/device.UpdateGeolocationRequest'
+          $ref: '#/definitions/device.GeolocationRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
-          schema:
-            $ref: '#/definitions/device.UpdateGeolocationRequest'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
       summary: Update a device geolocation
       tags:
       - Device UPDATE
@@ -324,22 +325,20 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/device.UpdateLanguageRequest'
+          $ref: '#/definitions/device.LanguageRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
-          schema:
-            $ref: '#/definitions/device.UpdateLanguageRequest'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
       summary: Update a device language
       tags:
       - Device UPDATE
@@ -367,7 +366,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
       summary: Get devices by Language filter
       tags:
       - Device GET
@@ -404,11 +403,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
       summary: Get events
       tags:
       - Event
@@ -422,7 +421,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/event.AddEventRequest'
+          $ref: '#/definitions/event.EventRequest'
       produces:
       - application/json
       responses:
@@ -431,11 +430,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/handlers.ErrorResponce'
+            $ref: '#/definitions/utils.ErrorResponce'
       summary: Add event
       tags:
       - Event

@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type Coordinates struct {
+type coordinates struct {
 	Longitude float64 `json:"longitude"`
 	Latitude  float64 `json:"latitude"`
 }
@@ -19,7 +19,7 @@ type deviceCreateMessage struct {
 	UUID        uuid.UUID   `json:"uuid"`
 	Platform    string      `json:"platform"`
 	Language    string      `json:"language"`
-	Coordinates Coordinates `json:"coordinates"`
+	Coordinates coordinates `json:"coordinates"`
 	Email       string      `json:"email"`
 }
 
@@ -58,8 +58,9 @@ func (r *KafkaConsumer) deviceUpdateLanguage(ctx context.Context, msg kafka.Mess
 }
 
 type deviceUpdateGeolocationMessage struct {
-	UUID        string    `json:"uuid"`
-	Coordinates []float64 `json:"coordinates"`
+	UUID      string  `json:"uuid"`
+	Longitude float64 `json:"longitude"`
+	Latitude  float64 `json:"latitude"`
 }
 
 func (r *KafkaConsumer) deviceUpdateGeoposition(ctx context.Context, msg kafka.Message) error {
@@ -69,7 +70,7 @@ func (r *KafkaConsumer) deviceUpdateGeoposition(ctx context.Context, msg kafka.M
 		logger.Logger.Error("Failed to unmarshal kafka message.", zap.Error(err))
 		return err
 	}
-	if err := r.deviceService.UpdateGeolocation(ctx, req.UUID, req.Coordinates); err != nil {
+	if err := r.deviceService.UpdateGeolocation(ctx, req.UUID, []float64{req.Longitude, req.Latitude}); err != nil {
 		logger.Logger.Error("Failed to update Geoposition in db: ", zap.Error(err))
 		return err
 	}
@@ -96,10 +97,6 @@ func (r *KafkaConsumer) deviceUpdateEmail(ctx context.Context, msg kafka.Message
 }
 
 func (r *KafkaConsumer) deviceDelete(ctx context.Context, msg kafka.Message) error {
-	// u, err := uuid.Parse(string(msg.Value))
-	// if err != nil {
-	// 	return err
-	// }
 	if err := r.deviceService.Delete(ctx, string(msg.Value)); err != nil {
 		logger.Logger.Error("Failed to delete Peson from db: ", zap.Error(err))
 		return err

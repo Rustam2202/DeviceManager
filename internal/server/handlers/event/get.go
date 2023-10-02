@@ -1,7 +1,6 @@
 package event
 
 import (
-	"device-manager/internal/server/handlers"
 	"device-manager/internal/server/handlers/utils"
 	"net/http"
 	"time"
@@ -18,8 +17,8 @@ import (
 //	@Param			timeBegin	query		string	true	"Begin time range"
 //	@Param			timeEnd		query		string	true	"End time range"
 //	@Success		200			{object}	[]domain.Event
-//	@Failure		400			{object}	handlers.ErrorResponce
-//	@Failure		500			{object}	handlers.ErrorResponce
+//	@Failure		400			{object}	utils.ErrorResponce
+//	@Failure		500			{object}	utils.ErrorResponce
 //	@Router			/event [get]
 func (h *EventHandler) Get(ctx *gin.Context) {
 	layout := "2006-01-02T15:04:05.999-07:00"
@@ -34,21 +33,21 @@ func (h *EventHandler) Get(ctx *gin.Context) {
 	tb, err := time.Parse(layout, timeBegin)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest,
-			handlers.ErrorResponce{Message: "Failed to parse begin date", Error: err})
+			utils.ErrorResponce{Message: "Failed to parse begin date", Error: err})
 		return
 	}
 	timeEnd := ctx.Query("timeEnd")
 	te, err := time.Parse(layout, timeEnd)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest,
-			handlers.ErrorResponce{Message: "Failed to parse end date", Error: err})
+			utils.ErrorResponce{Message: "Failed to parse end date", Error: err})
 		return
 	}
 
-	events, err := h.Service.Get(ctx, uuidReq, tb, te, "")
+	events, err := h.Service.Get(ctx, uuidReq, tb, te)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
-			handlers.ErrorResponce{Message: "Failed to get event from database", Error: err})
+			utils.ErrorResponce{Message: "Failed to get event from database", Error: err})
 		return
 	}
 	ctx.JSON(http.StatusOK, events)

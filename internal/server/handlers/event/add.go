@@ -2,7 +2,6 @@ package event
 
 import (
 	"device-manager/internal/kafka"
-	"device-manager/internal/server/handlers"
 	"device-manager/internal/server/handlers/utils"
 	"encoding/json"
 	"net/http"
@@ -11,13 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AddEventRequest struct {
+type EventRequest struct {
 	UUID       string        `json:"uuid" example:"550e8400-e29b-41d4-a716-446655440000"`
 	Name       string        `json:"name" example:"device event"`
 	Attributes []interface{} `json:"attributes"`
 }
 
-type addEventRequestOutput struct {
+type requestOutput struct {
 	UUID       string        `json:"uuid"`
 	Name       string        `json:"name"`
 	Attributes []interface{} `json:"attributes"`
@@ -29,18 +28,18 @@ type addEventRequestOutput struct {
 //	@Tags			Event
 //	@Accept			json
 //	@Produce		json
-//	@Param			request	body	AddEventRequest	true	"Add Event Request"
+//	@Param			request	body	EventRequest	true	"Add Event Request"
 //	@Success		200
-//	@Failure		400	{object}	handlers.ErrorResponce
-//	@Failure		500	{object}	handlers.ErrorResponce
+//	@Failure		400	{object}	utils.ErrorResponce
+//	@Failure		500	{object}	utils.ErrorResponce
 //	@Router			/event [post]
 func (h *EventHandler) Add(ctx *gin.Context) {
 	createdAt := time.Now()
-	var req AddEventRequest
+	var req EventRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest,
-			handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
+			utils.ErrorResponce{Message: "Failed to parse request", Error: err})
 		return
 	}
 	if errResp := utils.UuidValidation(req.UUID); errResp != nil {
@@ -48,7 +47,7 @@ func (h *EventHandler) Add(ctx *gin.Context) {
 		return
 	}
 	req.Attributes = utils.AttributesValidation(req.Attributes)
-	outputReq := addEventRequestOutput{
+	outputReq := requestOutput{
 		UUID:       req.UUID,
 		Name:       req.Name,
 		Attributes: req.Attributes,
@@ -57,13 +56,13 @@ func (h *EventHandler) Add(ctx *gin.Context) {
 	bytes, err := json.Marshal(outputReq)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest,
-			handlers.ErrorResponce{Message: "Failed to marshal request for kafka", Error: err})
+			utils.ErrorResponce{Message: "Failed to marshal request for kafka", Error: err})
 		return
 	}
 	err = h.Producer.WriteMessage(ctx, kafka.EventCreate, bytes)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
-			handlers.ErrorResponce{Message: "Failed to write message to kafka", Error: err})
+			utils.ErrorResponce{Message: "Failed to write message to kafka", Error: err})
 		return
 	}
 	ctx.JSON(http.StatusOK, nil)

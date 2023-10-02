@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"device-manager/internal/server/handlers"
 	"net/http"
 	"net/mail"
 
@@ -10,40 +9,40 @@ import (
 	"golang.org/x/text/language"
 )
 
-func LanguageValidation(input string) *handlers.ErrorResponce {
+func LanguageValidation(input string) *ErrorResponce {
 	_, err := language.Parse(input)
 	if err != nil {
-		return &handlers.ErrorResponce{Code: http.StatusBadRequest, Message: "Failed to parse language", Error: err}
+		return &ErrorResponce{Code: http.StatusBadRequest, Message: "Failed to parse language", Error: err}
 	}
 	return nil
 }
 
-func UuidValidation(input string) *handlers.ErrorResponce {
+func UuidValidation(input string) *ErrorResponce {
 	_, err := uuid.ParseBytes([]byte(input))
 	if err != nil {
-		return &handlers.ErrorResponce{Message: "Failed to parse UUID", Error: err}
+		return &ErrorResponce{Message: "Failed to parse UUID", Error: err}
 	}
 	return nil
 }
 
-func EmailValidation(input string) *handlers.ErrorResponce {
+func EmailValidation(input string) *ErrorResponce {
 	_, err := mail.ParseAddress(input)
 	if err != nil {
-		return &handlers.ErrorResponce{Message: "Failed to parse E-mail", Error: err}
+		return &ErrorResponce{Message: "Failed to parse E-mail", Error: err}
 	}
 	return nil
 }
 
-func PlatformValidation(input string) *handlers.ErrorResponce {
+func PlatformValidation(input string) *ErrorResponce {
 	platform := useragent.New(input)
 	if platform == nil {
-		return &handlers.ErrorResponce{Message: "Empty Platform request"}
+		return &ErrorResponce{Message: "Empty Platform request"}
 	}
 	if platform.OS() == "" {
-		return &handlers.ErrorResponce{Message: "Empty OS value"}
+		return &ErrorResponce{Message: "Empty OS value"}
 	}
 	if platform.Platform() == "" {
-		return &handlers.ErrorResponce{Message: "Empty platform value"}
+		return &ErrorResponce{Message: "Empty platform value"}
 	}
 	return nil
 }

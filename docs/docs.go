@@ -47,13 +47,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     }
                 }
@@ -91,7 +91,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     },
                     "404": {
@@ -127,13 +127,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     }
                 }
@@ -158,27 +158,24 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/device.UpdateEmailRequest"
+                            "$ref": "#/definitions/device.EmailRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/device.UpdateEmailRequest"
-                        }
+                        "description": "OK"
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     }
                 }
@@ -218,7 +215,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     }
                 }
@@ -269,7 +266,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     },
                     "404": {
@@ -278,7 +275,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     }
                 }
@@ -301,27 +298,24 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/device.UpdateGeolocationRequest"
+                            "$ref": "#/definitions/device.GeolocationRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/device.UpdateGeolocationRequest"
-                        }
+                        "description": "OK"
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     }
                 }
@@ -346,27 +340,24 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/device.UpdateLanguageRequest"
+                            "$ref": "#/definitions/device.LanguageRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/device.UpdateLanguageRequest"
-                        }
+                        "description": "OK"
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     }
                 }
@@ -409,7 +400,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     }
                 }
@@ -464,13 +455,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     }
                 }
@@ -494,7 +485,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/event.AddEventRequest"
+                            "$ref": "#/definitions/event.EventRequest"
                         }
                     }
                 ],
@@ -505,13 +496,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponce"
+                            "$ref": "#/definitions/utils.ErrorResponce"
                         }
                     }
                 }
@@ -524,11 +515,11 @@ const docTemplate = `{
             "properties": {
                 "latitude": {
                     "type": "number",
-                    "example": 37.552375
+                    "example": 37.554313
                 },
                 "longitude": {
                     "type": "number",
-                    "example": 55.646574
+                    "example": 55.646729
                 }
             }
         },
@@ -556,41 +547,46 @@ const docTemplate = `{
                 }
             }
         },
-        "device.UpdateEmailRequest": {
+        "device.EmailRequest": {
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "another@email.com"
                 },
                 "uuid": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         },
-        "device.UpdateGeolocationRequest": {
+        "device.GeolocationRequest": {
             "type": "object",
             "properties": {
                 "latitude": {
                     "type": "number",
-                    "default": 37.552375
+                    "example": 37.551595
                 },
                 "longitude": {
                     "type": "number",
-                    "default": 55.646575
+                    "example": 55.643881
                 },
                 "uuid": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         },
-        "device.UpdateLanguageRequest": {
+        "device.LanguageRequest": {
             "type": "object",
             "properties": {
                 "language": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "ru"
                 },
                 "uuid": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         },
@@ -646,7 +642,7 @@ const docTemplate = `{
                 }
             }
         },
-        "event.AddEventRequest": {
+        "event.EventRequest": {
             "type": "object",
             "properties": {
                 "attributes": {
@@ -663,7 +659,7 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.ErrorResponce": {
+        "utils.ErrorResponce": {
             "type": "object",
             "properties": {
                 "code": {

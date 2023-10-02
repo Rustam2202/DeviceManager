@@ -27,8 +27,6 @@ Build app:
 
 ## Up in docker
 
-To deploy this project run
-
 ```bash
   make compose
 ```

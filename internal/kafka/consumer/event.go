@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type addEventRequest struct {
+type addEventMessage struct {
 	UUID       string        `json:"uuid"`
 	Name       string        `json:"name"`
 	Attributes []interface{} `json:"attributes"`
@@ -18,7 +18,7 @@ type addEventRequest struct {
 }
 
 func (r *KafkaConsumer) eventCreate(ctx context.Context, msg kafka.Message) error {
-	var req addEventRequest
+	var req addEventMessage
 	err := json.Unmarshal(msg.Value, &req)
 	if err != nil {
 		logger.Logger.Error("Failed to unmarshal kafka message.", zap.Error(err))

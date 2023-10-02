@@ -15,7 +15,7 @@ type DeviceRepository interface {
 	Create(context.Context, *domain.Device) error
 	Get(context.Context, string) (*domain.Device, error)
 	GetByLanguage(context.Context, string) ([]domain.Device, error)
-	GetByGeolocation(context.Context, float64, float64, int) ([]domain.Device, error)
+	GetByGeolocation(context.Context, []float64, int) ([]domain.Device, error)
 	GetByEmail(context.Context, string) ([]domain.Device, error)
 	UpdateLanguage(context.Context, string, string) error
 	UpdateGeolocation(context.Context, string, []float64) error
@@ -81,8 +81,8 @@ func (s *DeviceService) GetByLanguage(ctx context.Context, lang string) ([]domai
 }
 
 func (s *DeviceService) GetByGeolocation(ctx context.Context,
-	long, lat float64, radius int) ([]domain.Device, error) {
-	device, err := s.repoDevice.GetByGeolocation(ctx, long, lat, radius)
+	coordinates []float64, radius int) ([]domain.Device, error) {
+	device, err := s.repoDevice.GetByGeolocation(ctx, coordinates, radius)
 	if err != nil {
 		return nil, err
 	}
@@ -151,8 +151,7 @@ func (s *EventService) Create(ctx context.Context,
 	return nil
 }
 
-func (s *EventService) Get(ctx context.Context,
-	id string, begin, end time.Time, filter string) ([]domain.Event, error) {
+func (s *EventService) Get(ctx context.Context, id string, begin, end time.Time) ([]domain.Event, error) {
 	device, err := s.repoDevice.Get(ctx, id)
 	if err != nil {
 		return nil, err

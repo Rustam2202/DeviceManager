@@ -2,7 +2,6 @@ package device
 
 import (
 	"device-manager/internal/kafka"
-	"device-manager/internal/server/handlers"
 	"device-manager/internal/server/handlers/utils"
 	"net/http"
 
@@ -16,8 +15,8 @@ import (
 //	@Produce		json
 //	@Param			uuid	path	string	true	"Device Id"
 //	@Success		200
-//	@Failure		400	{object}	handlers.ErrorResponce
-//	@Failure		500	{object}	handlers.ErrorResponce
+//	@Failure		400	{object}	utils.ErrorResponce
+//	@Failure		500	{object}	utils.ErrorResponce
 //	@Router			/device/{uuid} [delete]
 func (h *DeviceHandler) Delete(ctx *gin.Context) {
 	req := ctx.Param("uuid")
@@ -29,7 +28,7 @@ func (h *DeviceHandler) Delete(ctx *gin.Context) {
 	err := h.Producer.WriteMessage(ctx, kafka.DeviceDelete, bytes)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
-			handlers.ErrorResponce{Message: "Failed to write message to kafka", Error: err})
+			utils.ErrorResponce{Message: "Failed to write message to kafka", Error: err})
 		return
 	}
 	ctx.JSON(http.StatusOK, nil)

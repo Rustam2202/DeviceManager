@@ -6,7 +6,6 @@ import (
 	"device-manager/internal/logger"
 	"device-manager/internal/server"
 	"flag"
-	"log"
 
 	"github.com/spf13/viper"
 )
@@ -18,7 +17,7 @@ type Config struct {
 	KafkaConfig      *kafka.KafkaConfig
 }
 
-func LoadConfig() *Config {
+func MustLoadConfig() *Config {
 	var cfg Config
 	path := flag.String("confpath", "./", "path to config file")
 	flag.Parse()
@@ -30,11 +29,11 @@ func LoadConfig() *Config {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		log.Fatal(err)
+		panic(err.Error())
 	}
 	err = viper.Unmarshal(&cfg)
 	if err != nil {
-		log.Fatal(err)
+		panic(err.Error())
 	}
 	return &cfg
 }
