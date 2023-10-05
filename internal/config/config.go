@@ -23,12 +23,9 @@ func MustLoadConfig() *Config {
 	flag.Parse()
 
 	viper.Reset()
+	viper.AddConfigPath(*path)
 	viper.SetConfigType("yaml")
 	viper.SetConfigName("config")
-	viper.AddConfigPath(*path)
-
-	viper.AutomaticEnv()
-	viper.SetEnvPrefix("DATABASE")
 
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -38,5 +35,29 @@ func MustLoadConfig() *Config {
 	if err != nil {
 		panic(err.Error())
 	}
+	viper.AutomaticEnv()
+
+	viper.Reset()
+	viper.AddConfigPath(*path)
+	viper.SetConfigName("app")
+	viper.SetConfigType("env")
+	viper.SetEnvPrefix("server")
+
+	err = viper.ReadInConfig()
+	if err != nil {
+		panic(err.Error())
+	}
+	err = viper.Unmarshal(&cfg)
+	if err != nil {
+		panic(err.Error())
+	}
+	cfg.ServerHTTPConfig.Host = viper.GetString("SERVER_HTTP_CONFIG_HOST")
+	cfg.ServerHTTPConfig.Port = viper.GetInt("SERVER_HTTP_CONFIG_PORT")
+	cfg.DatabaseConfig.Host = viper.GetString("DATABASE_CONFIG_HOST")
+	cfg.DatabaseConfig.Port = viper.GetInt("DATABASE_CONFIG_PORT")
+	cfg.DatabaseConfig.Name = viper.GetString("DATABASE_CONFIG_NAME")
+	cfg.KafkaConfig.Brokers = viper.GetStringSlice("KAFKA_CONFIG_BROKERS")
+	cfg.KafkaConfig.Group = viper.GetString("KAFKA_CONFIG_GROUP")
+
 	return &cfg
 }

@@ -1,10 +1,9 @@
 ServerHTTPConfig:
   host: localhost #empty
   port: 8080
-  enviroments:
-  
+
 DatabaseConfig:
-  host: localhost # mongodb
+  host: localhost #localhost # mongodb
   port: 27017
   name: device_manager
 

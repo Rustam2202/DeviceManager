@@ -11,7 +11,6 @@ import (
 	"device-manager/internal/server/handlers/device"
 	"device-manager/internal/server/handlers/event"
 	"device-manager/internal/service"
-
 	"context"
 	"os"
 	"os/signal"
