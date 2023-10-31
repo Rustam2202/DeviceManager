@@ -11,38 +11,23 @@ import (
 )
 
 type Config struct {
-	LoggerConfig     *logger.LoggerConfig
-	DatabaseConfig   *database.MongoDbConfig
-	ServerHTTPConfig *server.ServerHTTPConfig
-	KafkaConfig      *kafka.KafkaConfig
+	LoggerConfig *logger.LoggerConfig
+	Database     *database.MongoDbConfig
+	Server       *server.ServerHTTPConfig
+	KafkaConfig  *kafka.KafkaConfig
 }
 
 func MustLoadConfig() *Config {
 	var cfg Config
+	var err error
 	path := flag.String("confpath", "./", "path to config file")
 	flag.Parse()
 
 	viper.Reset()
 	viper.AddConfigPath(*path)
+
 	viper.SetConfigType("yaml")
 	viper.SetConfigName("config")
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(err.Error())
-	}
-	err = viper.Unmarshal(&cfg)
-	if err != nil {
-		panic(err.Error())
-	}
-	viper.AutomaticEnv()
-
-	viper.Reset()
-	viper.AddConfigPath(*path)
-	viper.SetConfigName("app")
-	viper.SetConfigType("env")
-	viper.SetEnvPrefix("server")
-
 	err = viper.ReadInConfig()
 	if err != nil {
 		panic(err.Error())
@@ -51,13 +36,35 @@ func MustLoadConfig() *Config {
 	if err != nil {
 		panic(err.Error())
 	}
-	cfg.ServerHTTPConfig.Host = viper.GetString("SERVER_HTTP_CONFIG_HOST")
-	cfg.ServerHTTPConfig.Port = viper.GetInt("SERVER_HTTP_CONFIG_PORT")
-	cfg.DatabaseConfig.Host = viper.GetString("DATABASE_CONFIG_HOST")
-	cfg.DatabaseConfig.Port = viper.GetInt("DATABASE_CONFIG_PORT")
-	cfg.DatabaseConfig.Name = viper.GetString("DATABASE_CONFIG_NAME")
-	cfg.KafkaConfig.Brokers = viper.GetStringSlice("KAFKA_CONFIG_BROKERS")
-	cfg.KafkaConfig.Group = viper.GetString("KAFKA_CONFIG_GROUP")
+
+	viper.SetConfigType("env")
+	viper.SetConfigName("app")
+	viper.AutomaticEnv()
+	err = viper.ReadInConfig()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	err = viper.Unmarshal(&cfg.Server)
+	if err != nil {
+		panic(err.Error())
+	}
+	err = viper.Unmarshal(&cfg.Database)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	// fmt.Println("Server.Host:", cfg.Server.Host)
+	// fmt.Println("Server.Port:", cfg.Server.Port)
+	// fmt.Println("Database.Host:", cfg.Database.Host)
+	// fmt.Println("Database.Port:", cfg.Database.Port)
+	// fmt.Println("SERVER_HOST:", viper.Get("SERVER_HOST"))
+	// fmt.Println("SERVER_PORT:", viper.GetInt("SERVER_PORT"))
+	// fmt.Println("DATABSE_HOST:", viper.GetString("DATABASE_HOST"))
+	// fmt.Println("DATABASE_PORT", viper.GetInt("DATABASE_PORT"))
+	// fmt.Println("DATABASE_NAME", viper.GetString("DATABASE_NAME"))
+	// fmt.Println("KAFKA_BROKERS", viper.GetStringSlice("KAFKA_BROKERS"))
+	// fmt.Println("KAFKA_GROUP", viper.GetString("KAFKA_GROUP"))
 
 	return &cfg
 }

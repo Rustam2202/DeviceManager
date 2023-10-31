@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"device-manager/internal/config"
 	"device-manager/internal/database"
 	"device-manager/internal/kafka/consumer"
@@ -11,7 +12,6 @@ import (
 	"device-manager/internal/server/handlers/device"
 	"device-manager/internal/server/handlers/event"
 	"device-manager/internal/service"
-	"context"
 	"os"
 	"os/signal"
 	"sync"
@@ -24,7 +24,7 @@ func main() {
 
 	cfg := config.MustLoadConfig()
 	logger.MustConfigLogger(*cfg.LoggerConfig)
-	mdb := database.MustConnectMongo(ctx, cfg.DatabaseConfig)
+	mdb := database.MustConnectMongo(ctx, cfg.Database)
 
 	wg := &sync.WaitGroup{}
 
@@ -40,7 +40,7 @@ func main() {
 	kafkaConsumer := consumer.NewKafkaConsumer(cfg.KafkaConfig, deviceService, eventService)
 	kafkaConsumer.RunKafkaConsumer(ctx, wg)
 
-	s := server.NewHTTP(cfg.ServerHTTPConfig, deviceHandler, eventHandler)
+	s := server.NewHTTP(cfg.Server, deviceHandler, eventHandler)
 	wg.Add(1)
 	go s.StartHTTP(ctx, wg)
 

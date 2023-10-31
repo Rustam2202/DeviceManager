@@ -1,5 +1,5 @@
 run:
-	go run ./cmd/main.go -confpath=./cmd/
+	go run ./cmd/main.go -confpath=./
 build:
 	go build -o bin/device-manager ./cmd/main.go
 

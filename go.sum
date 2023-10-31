@@ -212,10 +212,6 @@ github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe h1:iruDEfMl2E6f
 github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe/go.mod h1:wL8QJuTMNUDYhXwkmfOly8iTdp5TEcJFWZD2D7SIkUc=
 github.com/mssola/useragent v1.0.0 h1:WRlDpXyxHDNfvZaPEut5Biveq86Ze4o4EMffyMxmH5o=
 github.com/mssola/useragent v1.0.0/go.mod h1:hz9Cqz4RXusgg1EdI4Al0INR62kP7aPSRNHnpU+b85Y=
-github.com/mvader/detect v0.0.0-20160524092137-c0c2ff5e5733 h1:68pUEeoYTbBRsDH12v8Y7Gc/xXd/y+IP3ZsyPwJis4s=
-github.com/mvader/detect v0.0.0-20160524092137-c0c2ff5e5733/go.mod h1:qt2FA75pA2fN5ty3diq1XYy3FTwemOk9r27Sm1C1Iao=
-github.com/mvader/useragent v0.4.1 h1:1fpBQj5z6o1G9HW1q3AjXHPiPw9EcuL1JKGJi/ILxqg=
-github.com/mvader/useragent v0.4.1/go.mod h1:BLHFUXibSFJ608IHJZK50rBSVq/bLl3JtT8/d/h4XQM=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
 github.com/pelletier/go-toml/v2 v2.0.8 h1:0ctb6s9mE31h0/lhu+J6OPmVeDxJn+kYnJc2jZR9tGQ=
 github.com/pelletier/go-toml/v2 v2.0.8/go.mod h1:vuYfssBdrU2XDZ9bYydBu6t+6a6PYNcZljzZR9VXg+4=
