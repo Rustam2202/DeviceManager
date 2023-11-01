@@ -28,7 +28,7 @@ func main() {
 
 	wg := &sync.WaitGroup{}
 
-	kafkaProducer := producer.NewKafkaProducer(cfg.KafkaConfig)
+	kafkaProducer := producer.NewKafkaProducer(cfg.Kafka)
 
 	deviceRepository := repository.NewDeviceRepository(mdb)
 	eventRepository := repository.NewEventRepository(mdb)
@@ -37,7 +37,7 @@ func main() {
 	deviceHandler := device.NewDeviceHandler(deviceService, kafkaProducer)
 	eventHandler := event.NewEventHandler(eventService, kafkaProducer)
 
-	kafkaConsumer := consumer.NewKafkaConsumer(cfg.KafkaConfig, deviceService, eventService)
+	kafkaConsumer := consumer.NewKafkaConsumer(cfg.Kafka, deviceService, eventService)
 	kafkaConsumer.RunKafkaConsumer(ctx, wg)
 
 	s := server.NewHTTP(cfg.Server, deviceHandler, eventHandler)

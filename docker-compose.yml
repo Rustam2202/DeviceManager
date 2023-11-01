@@ -12,6 +12,7 @@ services:
       - SERVER_HOST=0.0.0.0
       - SERVER_PORT=8080
       - DATABASE_HOST=mongodb
+      - KAFKA_BROKERS=kafka:29092
     depends_on:
       - mongodb
       - kafka
@@ -23,22 +24,36 @@ services:
     ports:
       - 27017:27017
 
-  zookeeper:
-    container_name: Zookeeper
-    image: wurstmeister/zookeeper
-    restart: always
-    ports:
-      - 2181:2181
-
   kafka:
-    container_name: Kafka
-    image: wurstmeister/kafka
-    restart: always
+    image: confluentinc/cp-kafka
     ports:
-      - 9092:9092
+      - 29092:29092
     environment:
-      - KAFKA_ADVERTISED_HOST_NAME=kafka
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_CREATE_TOPICS=device-create,device-update,device-delete,event-create
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
       - zookeeper
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    ports:
+      - 22181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  # debug:
+  #   container_name: Device-manager-debugger
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile.debug
+  #   ports:
+  #     - "8083:8080"
+  #     - "4040:4000"
+  #   depends_on:
+  #     - mongodb
+  #     - kafka

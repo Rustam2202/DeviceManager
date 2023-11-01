@@ -14,7 +14,7 @@ type Config struct {
 	LoggerConfig *logger.LoggerConfig
 	Database     *database.MongoDbConfig
 	Server       *server.ServerHTTPConfig
-	KafkaConfig  *kafka.KafkaConfig
+	Kafka        *kafka.KafkaConfig
 }
 
 func MustLoadConfig() *Config {
@@ -53,18 +53,10 @@ func MustLoadConfig() *Config {
 	if err != nil {
 		panic(err.Error())
 	}
-
-	// fmt.Println("Server.Host:", cfg.Server.Host)
-	// fmt.Println("Server.Port:", cfg.Server.Port)
-	// fmt.Println("Database.Host:", cfg.Database.Host)
-	// fmt.Println("Database.Port:", cfg.Database.Port)
-	// fmt.Println("SERVER_HOST:", viper.Get("SERVER_HOST"))
-	// fmt.Println("SERVER_PORT:", viper.GetInt("SERVER_PORT"))
-	// fmt.Println("DATABSE_HOST:", viper.GetString("DATABASE_HOST"))
-	// fmt.Println("DATABASE_PORT", viper.GetInt("DATABASE_PORT"))
-	// fmt.Println("DATABASE_NAME", viper.GetString("DATABASE_NAME"))
-	// fmt.Println("KAFKA_BROKERS", viper.GetStringSlice("KAFKA_BROKERS"))
-	// fmt.Println("KAFKA_GROUP", viper.GetString("KAFKA_GROUP"))
+	err = viper.Unmarshal(&cfg.Kafka)
+	if err != nil {
+		panic(err.Error())
+	}
 
 	return &cfg
 }

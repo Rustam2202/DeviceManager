@@ -1,14 +1,14 @@
 Server:
-  host: localhost #empty
+  host: localhost
   port: 8080
 
 Database:
-  host: localhost #localhost # mongodb
+  host: localhost
   port: 27017
   name: device_manager
 
 KafkaConfig:
-  brokers: localhost:9092 # kafka:9092
+  brokers: localhost:9092
   group: "group"
 
 LoggerConfig:
