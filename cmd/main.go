@@ -23,7 +23,7 @@ func main() {
 	defer stop()
 
 	cfg := config.MustLoadConfig()
-	logger.MustConfigLogger(*cfg.LoggerConfig)
+	logger.MustConfigLogger(*cfg.Logger)
 	mdb := database.MustConnectMongo(ctx, cfg.Database)
 
 	wg := &sync.WaitGroup{}

@@ -11,10 +11,10 @@ import (
 )
 
 type Config struct {
-	LoggerConfig *logger.LoggerConfig
-	Database     *database.MongoDbConfig
-	Server       *server.ServerHTTPConfig
-	Kafka        *kafka.KafkaConfig
+	Logger   *logger.LoggerConfig
+	Database *database.MongoDbConfig
+	Server   *server.ServerHTTPConfig
+	Kafka    *kafka.KafkaConfig
 }
 
 func MustLoadConfig() *Config {
@@ -44,7 +44,6 @@ func MustLoadConfig() *Config {
 	if err != nil {
 		panic(err.Error())
 	}
-
 	err = viper.Unmarshal(&cfg.Server)
 	if err != nil {
 		panic(err.Error())

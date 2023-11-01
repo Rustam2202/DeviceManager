@@ -14,7 +14,7 @@ Clone the project:
   git clone https://github.com/Rustam2202/DeviceManager.git
 ```
 
-Config parameters in ```cmd/config.yaml``` and start server:
+Config parameters in ```cmd/config.yaml```, ```app.env``` files and start server:
 
 ```bash
   make run

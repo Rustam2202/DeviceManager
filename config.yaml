@@ -7,11 +7,11 @@ Database:
   port: 27017
   name: device_manager
 
-KafkaConfig:
+Kafka:
   brokers: localhost:9092
   group: "group"
 
-LoggerConfig:
+Logger:
   encoding: json
   level: info
   outputPaths:
