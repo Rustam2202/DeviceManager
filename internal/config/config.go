@@ -6,6 +6,7 @@ import (
 	"device-manager/internal/logger"
 	"device-manager/internal/server"
 	"flag"
+	// "strings"
 
 	"github.com/spf13/viper"
 )
@@ -23,10 +24,10 @@ func MustLoadConfig() *Config {
 	path := flag.String("confpath", "./", "path to config file")
 	flag.Parse()
 
+	// read from config.yml
 	viper.Reset()
 	viper.AddConfigPath(*path)
-
-	viper.SetConfigType("yaml")
+	viper.SetConfigType("yml")
 	viper.SetConfigName("config")
 	err = viper.ReadInConfig()
 	if err != nil {
@@ -37,23 +38,34 @@ func MustLoadConfig() *Config {
 		panic(err.Error())
 	}
 
+	// read from app.env
 	viper.SetConfigType("env")
 	viper.SetConfigName("app")
 	viper.AutomaticEnv()
+	// viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	err = viper.ReadInConfig()
 	if err != nil {
 		panic(err.Error())
 	}
-	err = viper.Unmarshal(&cfg.Server)
-	if err != nil {
+	if err = viper.UnmarshalKey("SERVER_HOST", &cfg.Server.Host); err != nil {
 		panic(err.Error())
 	}
-	err = viper.Unmarshal(&cfg.Database)
-	if err != nil {
+	if err = viper.UnmarshalKey("SERVER_PORT", &cfg.Server.Port); err != nil {
 		panic(err.Error())
 	}
-	err = viper.Unmarshal(&cfg.Kafka)
-	if err != nil {
+	if err = viper.UnmarshalKey("DATABASE_HOST", &cfg.Database.Host); err != nil {
+		panic(err.Error())
+	}
+	if err = viper.UnmarshalKey("DATABASE_PORT", &cfg.Database.Port); err != nil {
+		panic(err.Error())
+	}
+	if err = viper.UnmarshalKey("DATABASE_NAME", &cfg.Database.Name); err != nil {
+		panic(err.Error())
+	}
+	if err = viper.UnmarshalKey("KAFKA_BROKERS", &cfg.Kafka.Brokers); err != nil {
+		panic(err.Error())
+	}
+	if err = viper.UnmarshalKey("KAFKA_GROUP", &cfg.Kafka.Group); err != nil {
 		panic(err.Error())
 	}
 
